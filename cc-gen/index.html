@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>UniCard Gen - Professional CC Generator</title>
+    <meta name="description" content="Advanced Credit Card Generator for developers. Generate valid test numbers with BIN, Luhn algorithm, and custom formats.">
+    <meta name="keywords" content="CC Generator, NamsoGen, Credit Card Creator, Bin Generator, Test CC Numbers, Luhn Algorithm">
+    <meta name="author" content="DrKingBD">
+    <link rel="canonical" href="https://kingcc.web.app/cc-gen">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="UniCard CC Generator">
+    <meta property="og:description" content="Generate valid testing credit card numbers instantly.">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Tinos:wght@700&display=swap');
+        body { font-family: 'Roboto', sans-serif; }
+        
+        /* Custom Scrollbar for Textarea */
+        textarea::-webkit-scrollbar {
+            width: 8px;
+        }
+        textarea::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        textarea::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        textarea::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+    <nav class="bg-blue-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <a href="/" class="font-bold text-xl flex items-center gap-2">
+                    <span class="bg-white text-blue-900 px-2 py-1 rounded">Uni</span>Gen
+                </a>
+
+                <div class="hidden md:flex space-x-6 items-center">
+                    <a href="/" class="hover:text-blue-300 transition">Home</a>
+                    <a href="/nid" class="hover:text-blue-300 transition">NID Maker</a>
+                    <a href="/drive" class="hover:text-blue-300 transition">Driving License</a>
+                    <a href="/cc-gen" class="text-blue-300 font-bold border-b-2 border-blue-300">CC Gen</a>
+                    <a href="/cc-checker" class="hover:text-blue-300 transition">CC Checker</a>
+                </div>
+
+                <a href="https://t.me/drkingbd" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-bold py-2 px-4 rounded-full transition flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12.268 12.268 0 0 0-.294 0zM10.14 14.51l.202 2.683a1.2 1.2 0 0 0 .965-.5l1.322-1.266 2.728 2.013c.5.274 1.28.137 1.463-.455l2.655-12.5c.267-1.078-1.252-1.548-1.776-.777L3.765 12.482c-.886.354-.88 1.227.194 1.538l3.5 1.092 1.22 3.844a.6.6 0 0 0 1.15-.2l-1.08-3.412 6.8-4.85-5.409 4.016z"/></svg>
+                    Telegram
+                </a>
+            </div>
+            <div class="md:hidden flex space-x-4 overflow-x-auto pb-3 text-sm whitespace-nowrap px-4">
+                <a href="/" class="hover:text-blue-300">Home</a>
+                <a href="/nid" class="hover:text-blue-300">NID Maker</a>
+                <a href="/cc-gen" class="text-blue-300 font-bold">CC Gen</a>
+                <a href="/cc-checker" class="hover:text-blue-300">Checker</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex-grow p-6 flex justify-center">
+        <div class="w-full max-w-4xl grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <div class="bg-white p-6 rounded-xl shadow-lg h-fit">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-2">
+                    <span class="bg-blue-100 text-blue-600 p-1 rounded">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
+                    </span>
+                    Generator Settings
+                </h2>
+
+                <div class="mb-5">
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">BIN (Bank Identification Number)</label>
+                    <input type="text" id="ccBin" placeholder="536368xxxxxxxxxx" value="536368xxxxxxxxxx" class="w-full border-2 border-blue-100 rounded-lg p-3 text-lg font-mono focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition">
+                    <p class="text-xs text-gray-400 mt-1">Use 'x' for random digits. Min 6 digits.</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-5">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Month</label>
+                        <select id="ccMonth" class="w-full border border-gray-300 rounded p-2 bg-gray-50">
+                            <option value="Random">Random</option>
+                            <option value="01">01 - Jan</option>
+                            <option value="02">02 - Feb</option>
+                            <option value="03">03 - Mar</option>
+                            <option value="04">04 - Apr</option>
+                            <option value="05">05 - May</option>
+                            <option value="06">06 - Jun</option>
+                            <option value="07">07 - Jul</option>
+                            <option value="08">08 - Aug</option>
+                            <option value="09">09 - Sep</option>
+                            <option value="10">10 - Oct</option>
+                            <option value="11">11 - Nov</option>
+                            <option value="12">12 - Dec</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Year</label>
+                        <select id="ccYear" class="w-full border border-gray-300 rounded p-2 bg-gray-50">
+                            <option value="Random">Random</option>
+                            </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">CCV2</label>
+                        <input type="text" id="ccCcv" placeholder="Rand" class="w-full border border-gray-300 rounded p-2" maxlength="4">
+                        <p class="text-[10px] text-gray-400">Leave empty for random</p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Quantity</label>
+                        <input type="number" id="ccQuantity" value="10" min="1" max="100" class="w-full border border-gray-300 rounded p-2">
+                    </div>
+                </div>
+
+                <button onclick="generateCards()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-lg transform active:scale-95 transition flex justify-center items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
+                    Generate Cards
+                </button>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-lg h-full flex flex-col">
+                <div class="flex justify-between items-center mb-4 border-b pb-2">
+                    <h2 class="text-lg font-bold text-gray-700">Result</h2>
+                    <button onclick="copyResult()" class="text-xs font-bold bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1 rounded transition">
+                        Copy All
+                    </button>
+                </div>
+                
+                <div class="relative flex-grow">
+                    <textarea id="resultArea" class="w-full h-full min-h-[300px] bg-gray-900 text-green-400 font-mono p-4 rounded-lg text-sm focus:outline-none resize-none" readonly>
+536368xxxxxxxxxx|MM|YYYY|CVV
+Generating...
+                    </textarea>
+                    
+                    <div id="statusBadge" class="absolute top-2 right-2 bg-white/10 backdrop-blur text-white text-[10px] px-2 py-1 rounded hidden">
+                        Generated Successfully
+                    </div>
+                </div>
+                <p class="text-xs text-gray-400 mt-2 text-center">Format: CC | Month | Year | CVV</p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-white border-t mt-8 py-6 text-center">
+        <p class="text-gray-600">© 2025 UniCard Tools.</p>
+        <p class="text-xs text-gray-400 mt-1 px-4">Disclaimer: This tool generates mathematically valid numbers for testing/development purposes only. Do not use for illegal activities.</p>
+    </footer>
+
+    <script>
+        // Populate Year Dropdown (Current Year + 10)
+        const yearSelect = document.getElementById('ccYear');
+        const currentYear = new Date().getFullYear();
+        for (let i = 0; i <= 10; i++) {
+            let y = currentYear + i;
+            let option = document.createElement('option');
+            option.value = y;
+            option.text = y;
+            yearSelect.appendChild(option);
+        }
+
+        function generateCards() {
+            const binInput = document.getElementById('ccBin').value.trim();
+            const monthInput = document.getElementById('ccMonth').value;
+            const yearInput = document.getElementById('ccYear').value;
+            const ccvInput = document.getElementById('ccCcv').value.trim();
+            const quantity = parseInt(document.getElementById('ccQuantity').value) || 10;
+            const output = document.getElementById('resultArea');
+
+            if (binInput.length < 6) {
+                alert("Please enter a BIN with at least 6 digits.");
+                return;
+            }
+
+            // Normalize BIN: keep numbers, replace others with 'x' if needed, but usually user types x
+            // Logic: Identify the structure.
+            let format = binInput.replace(/[^0-9x]/gi, '');
+            if(format === "") format = "536368xxxxxxxxxx";
+
+            let results = [];
+
+            for (let i = 0; i < quantity; i++) {
+                // 1. Generate PAN
+                let pan = generatePAN(format);
+                
+                // 2. Generate Date
+                let month = (monthInput === 'Random') ? ('0' + (Math.floor(Math.random() * 12) + 1)).slice(-2) : monthInput;
+                let year = (yearInput === 'Random') ? (currentYear + Math.floor(Math.random() * 6)) : yearInput;
+                
+                // 3. Generate CCV
+                let ccv = (ccvInput === '') ? Math.floor(Math.random() * 899 + 100) : ccvInput;
+                // If user typed partial CCV? No, usually it's fixed or random. 
+                // If fixed, use fixed.
+                
+                results.push(`${pan}|${month}|${year}|${ccv}`);
+            }
+
+            output.value = results.join('\n');
+            
+            // Show flash badge
+            const badge = document.getElementById('statusBadge');
+            badge.classList.remove('hidden');
+            setTimeout(() => badge.classList.add('hidden'), 2000);
+        }
+
+        function generatePAN(binFormat) {
+            let pan = "";
+            let len = 16; // Default length
+            
+            // If bin format is shorter than 16, we usually pad to 16. 
+            // If user enters 15 digits of 'x', we respect that.
+            if(binFormat.length > 12) {
+                len = binFormat.length;
+            }
+
+            // Fill 'x' with random numbers except the last one
+            let tempPan = "";
+            for (let i = 0; i < len - 1; i++) {
+                if (i < binFormat.length && binFormat[i] !== 'x') {
+                    tempPan += binFormat[i];
+                } else {
+                    tempPan += Math.floor(Math.random() * 10);
+                }
+            }
+
+            // Calculate Check Digit (Luhn)
+            let checkDigit = calculateLuhn(tempPan);
+            pan = tempPan + checkDigit;
+            return pan;
+        }
+
+        function calculateLuhn(partialPan) {
+            let sum = 0;
+            let shouldDouble = true;
+            
+            // Iterate from right to left
+            for (let i = partialPan.length - 1; i >= 0; i--) {
+                let digit = parseInt(partialPan.charAt(i));
+
+                if (shouldDouble) {
+                    digit *= 2;
+                    if (digit > 9) digit -= 9;
+                }
+
+                sum += digit;
+                shouldDouble = !shouldDouble;
+            }
+
+            let checkDigit = (10 - (sum % 10)) % 10;
+            return checkDigit;
+        }
+
+        function copyResult() {
+            const copyText = document.getElementById("resultArea");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); 
+            navigator.clipboard.writeText(copyText.value).then(() => {
+                alert("Copied to clipboard!");
+            });
+        }
+    </script>
+</body>
+</html>
