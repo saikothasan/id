@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>UniCard NID - Smart National ID Generator</title>
+    <meta name="description" content="Create realistic Bangladeshi Smart NID Card replicas for projects. Features front and back generation with MRZ.">
+    <meta name="keywords" content="NID Maker, BD Smart Card Generator, National ID Creator, Fake NID for Project, Bangladesh ID Card">
+    <meta name="author" content="DrKingBD">
+    <link rel="canonical" href="https://kingcc.web.app/nid">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="UniCard NID Generator">
+    <meta property="og:description" content="Generate professional Smart NID cards instantly.">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Roboto:wght@400;500;700&family=Share+Tech+Mono&display=swap');
+
+        body { font-family: 'Roboto', sans-serif; }
+        .font-bn { font-family: 'Hind Siliguri', sans-serif; }
+        .font-mrz { font-family: 'Share Tech Mono', monospace; letter-spacing: 2px; }
+
+        /* NID Specific Styling */
+        .nid-card {
+            width: 450px; /* Scaled down for display, html2canvas will capture high res */
+            height: 285px;
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            background-color: #eefcf6;
+        }
+
+        /* Complex Background Simulation */
+        .nid-texture {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(135deg, rgba(46, 139, 87, 0.05) 25%, transparent 25%),
+                linear-gradient(225deg, rgba(46, 139, 87, 0.05) 25%, transparent 25%),
+                linear-gradient(45deg, rgba(46, 139, 87, 0.05) 25%, transparent 25%),
+                linear-gradient(315deg, rgba(46, 139, 87, 0.05) 25%, transparent 25%);
+            background-size: 10px 10px;
+            z-index: 0;
+        }
+
+        .nid-sun {
+            position: absolute;
+            width: 160px;
+            height: 160px;
+            background: radial-gradient(circle, rgba(255,0,0,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            top: 50%;
+            left: 60%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+        }
+
+        .chip-sim {
+            background: linear-gradient(135deg, #d4af37, #f9e076, #d4af37);
+            border: 1px solid #b8860b;
+            border-radius: 4px;
+        }
+        
+        /* Ghost Image Blend */
+        .ghost-img {
+            mix-blend-mode: multiply;
+            opacity: 0.15;
+            filter: grayscale(100%);
+        }
+        
+        .mrz-text {
+            font-family: 'OCR-B', 'Courier New', monospace;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+    <nav class="bg-blue-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <a href="/" class="font-bold text-xl flex items-center gap-2">
+                    <span class="bg-white text-blue-900 px-2 py-1 rounded">Uni</span>NID
+                </a>
+                <div class="hidden md:flex space-x-6 items-center">
+                    <a href="/" class="hover:text-blue-300 transition">Home</a>
+                    <a href="/nid" class="text-blue-300 font-bold border-b-2 border-blue-300">NID Maker</a>
+                    <a href="/drive" class="hover:text-blue-300 transition">Driving License</a>
+                    <a href="/cc-gen" class="hover:text-blue-300 transition">CC Gen</a>
+                    <a href="/signature" class="hover:text-blue-300 transition">Signature</a>
+                </div>
+                <a href="https://t.me/drkingbd" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-bold py-2 px-4 rounded-full transition flex items-center gap-2">
+                    Telegram
+                </a>
+            </div>
+            <div class="md:hidden flex space-x-4 overflow-x-auto pb-3 text-sm whitespace-nowrap px-4">
+                <a href="/" class="hover:text-blue-300">Home</a>
+                <a href="/nid" class="font-bold text-blue-300">NID Maker</a>
+                <a href="/cc-gen" class="hover:text-blue-300">CC Gen</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex-grow p-6">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 xl:grid-cols-12 gap-8">
+            
+            <div class="xl:col-span-5 bg-white p-6 rounded-xl shadow-lg h-fit">
+                <h2 class="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">Citizen Details</h2>
+                
+                <div class="space-y-3">
+                    <div>
+                        <label class="text-xs font-semibold text-gray-500 uppercase">Name (Bangla)</label>
+                        <input type="text" id="inNameBn" value="আব্দুল কাদের" class="font-bn w-full border rounded p-2 text-sm" oninput="updateCard()">
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-500 uppercase">Name (English)</label>
+                        <input type="text" id="inNameEn" value="ABDUL QUADER" class="w-full border rounded p-2 text-sm uppercase" oninput="updateCard()">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-xs font-semibold text-gray-500 uppercase">Father (Bangla)</label>
+                            <input type="text" id="inFather" value="ফায়াজ এফাজ" class="font-bn w-full border rounded p-2 text-sm" oninput="updateCard()">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-500 uppercase">Mother (Bangla)</label>
+                            <input type="text" id="inMother" value="সুমাইয়া রিহা" class="font-bn w-full border rounded p-2 text-sm" oninput="updateCard()">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-xs font-semibold text-gray-500 uppercase">Date of Birth</label>
+                            <input type="text" id="inDob" value="02 Jan 2000" class="w-full border rounded p-2 text-sm" oninput="updateCard()">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-500 uppercase">NID No</label>
+                            <input type="text" id="inNid" value="3688993675" class="w-full border rounded p-2 text-sm" oninput="updateCard()">
+                        </div>
+                    </div>
+
+                    <div class="pt-2 border-t mt-2">
+                        <label class="text-xs font-bold text-blue-600 uppercase mb-2 block">Back Side Details</label>
+                        
+                        <div>
+                            <label class="text-xs font-semibold text-gray-500 uppercase">Address (Bangla)</label>
+                            <textarea id="inAddress" rows="2" class="font-bn w-full border rounded p-2 text-sm" oninput="updateCard()">বাসা/হোল্ডিং: ০০৫৩, গ্রাম/রাস্তা: কুমিল্লা, ডাকঘর: ৩৫০০, চট্টগ্রাম বিভাগ, ৫৪ কুমিল্লা সদর</textarea>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-2 mt-2">
+                            <div>
+                                <label class="text-xs font-semibold text-gray-500 uppercase">Blood</label>
+                                <input type="text" id="inBlood" value="A-" class="w-full border rounded p-2 text-sm" oninput="updateCard()">
+                            </div>
+                             <div class="col-span-2">
+                                <label class="text-xs font-semibold text-gray-500 uppercase">Place of Birth</label>
+                                <input type="text" id="inPob" value="Cumilla" class="w-full border rounded p-2 text-sm" oninput="updateCard()">
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                             <label class="text-xs font-semibold text-gray-500 uppercase">Issue Date</label>
+                             <input type="text" id="inIssue" value="07 Jan 2017" class="w-full border rounded p-2 text-sm" oninput="updateCard()">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 pt-2 border-t mt-2">
+                        <div>
+                            <label class="text-xs font-semibold text-gray-500 uppercase">Photo</label>
+                            <input type="file" id="inputPhoto" accept="image/*" class="w-full text-xs border rounded p-1" onchange="loadImage(this, ['imgPhoto', 'imgGhost'])">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-500 uppercase">Signature</label>
+                            <input type="file" id="inputSign" accept="image/*" class="w-full text-xs border rounded p-1" onchange="loadImage(this, ['imgSign'])">
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 mt-4">
+                        <button onclick="downloadSide('frontCard')" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition text-sm">
+                            Download Front
+                        </button>
+                        <button onclick="downloadSide('backCard')" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition text-sm">
+                            Download Back
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="xl:col-span-7 flex flex-col items-center gap-8">
+                
+                <div>
+                    <h3 class="text-gray-500 font-bold mb-2 text-center text-sm">FRONT SIDE PREVIEW</h3>
+                    <div id="frontCard" class="nid-card relative bg-white text-gray-800">
+                        <div class="nid-texture"></div>
+                        <div class="nid-sun"></div>
+
+                        <div class="relative z-10 flex pt-2 pl-3 pr-3">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Government_Seal_of_Bangladesh.svg/1200px-Government_Seal_of_Bangladesh.svg.png" class="w-10 h-10 object-contain mt-1">
+                            <div class="flex-grow text-center">
+                                <h1 class="font-bn font-bold text-lg leading-tight text-gray-900">গণপ্রজাতন্ত্রী বাংলাদেশ সরকার</h1>
+                                <h2 class="text-[10px] text-green-700 font-medium">Government of the People's Republic of Bangladesh</h2>
+                                <div class="flex justify-center items-center gap-2 mt-0.5">
+                                    <h3 class="font-bn text-sm font-bold">জাতীয় পরিচয়পত্র</h3>
+                                    <span class="text-red-600 font-bold">/</span>
+                                    <h3 class="text-xs font-bold text-red-600">National ID Card</h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="relative z-10 flex mt-2 pl-4">
+                            <div class="w-[100px] flex-shrink-0 flex flex-col items-center">
+                                <div class="w-[95px] h-[115px] bg-gray-300 rounded overflow-hidden border border-gray-300">
+                                    <img id="imgPhoto" src="https://via.placeholder.com/150" class="w-full h-full object-cover">
+                                </div>
+                                <img id="imgSign" src="https://via.placeholder.com/100x40?text=Sign" class="w-20 h-8 object-contain mt-2 mix-blend-multiply">
+                            </div>
+
+                            <div class="flex-grow pl-3 pr-4 relative">
+                                <div class="absolute right-4 top-8 w-24 h-28 overflow-hidden rounded-full opacity-30">
+                                     <img id="imgGhost" src="https://via.placeholder.com/150" class="w-full h-full object-cover grayscale">
+                                </div>
+
+                                <div class="relative z-20 space-y-[2px]">
+                                    <div>
+                                        <p class="font-bn text-[10px] text-gray-600">নাম</p>
+                                        <p id="outNameBn" class="font-bn text-sm font-bold text-black leading-none">আব্দুল কাদের</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-[9px] text-gray-600">Name</p>
+                                        <p id="outNameEn" class="text-[11px] font-bold text-black uppercase leading-none">ABDUL QUADER</p>
+                                    </div>
+                                    <div class="pt-1">
+                                        <p class="font-bn text-[10px] text-gray-600">পিতা</p>
+                                        <p id="outFather" class="font-bn text-[11px] text-gray-800 leading-none">ফায়াজ এফাজ</p>
+                                    </div>
+                                    <div>
+                                        <p class="font-bn text-[10px] text-gray-600">মাতা</p>
+                                        <p id="outMother" class="font-bn text-[11px] text-gray-800 leading-none">সুমাইয়া রিহা</p>
+                                    </div>
+                                    
+                                    <div class="flex items-center gap-4 pt-2">
+                                        <div>
+                                            <p class="text-[9px] text-gray-600">Date of Birth</p>
+                                            <p id="outDob" class="text-[11px] font-bold text-red-600">02 Jan 2000</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-[9px] text-gray-600">NID No.</p>
+                                            <p id="outNid" class="text-[13px] font-bold text-blue-900">3688993675</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="absolute right-2 top-16 w-10 h-8 chip-sim grid grid-cols-2 gap-1 p-1 shadow-sm z-30">
+                                    <div class="border border-yellow-700 rounded-sm"></div><div class="border border-yellow-700 rounded-sm"></div>
+                                    <div class="border border-yellow-700 rounded-sm"></div><div class="border border-yellow-700 rounded-sm"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="absolute bottom-2 right-4 opacity-50">
+                             <div class="text-[8px] text-gray-400">02 Jan 2000</div>
+                         </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-gray-500 font-bold mb-2 text-center text-sm">BACK SIDE PREVIEW</h3>
+                    <div id="backCard" class="nid-card relative bg-white text-gray-800">
+                        <div class="nid-texture"></div>
+                        
+                        <div class="relative z-10 w-full h-12 bg-white border-b border-gray-200 flex items-center justify-center overflow-hidden mt-2 px-4">
+                            <div class="w-full h-8 bg-[url('https://upload.wikimedia.org/wikipedia/commons/4/46/PDF417.png')] bg-repeat-x bg-contain opacity-80 grayscale"></div>
+                        </div>
+
+                        <div class="relative z-10 px-4 py-2 text-[10px] leading-tight">
+                            <p class="font-bn">
+                                <span class="font-bold">ঠিকানা:</span> 
+                                <span id="outAddress">বাসা/হোল্ডিং: ০০৫৩, গ্রাম/রাস্তা: কুমিল্লা, ডাকঘর: ৩৫০০, চট্টগ্রাম বিভাগ, ৫৪ কুমিল্লা সদর</span>
+                            </p>
+                        </div>
+
+                        <div class="relative z-10 px-4 flex justify-between items-center text-[9px] mt-1 font-bold text-gray-700">
+                            <div>
+                                <span>Blood Group: <span id="outBlood" class="text-red-600">A-</span></span>
+                            </div>
+                            <div>
+                                <span>Place Of Birth: <span id="outPob">Cumilla</span></span>
+                            </div>
+                            <div>
+                                <span>Issue Date: <span id="outIssue">07 Jan 2017</span></span>
+                            </div>
+                        </div>
+
+                        <div class="absolute right-4 top-20 w-12 h-10 opacity-80 z-0">
+                            <svg viewBox="0 0 512 512" fill="#d63384">
+                                <path d="M256 0C150 0 150 100 150 100C150 100 100 150 100 200C100 250 150 280 256 350C362 280 412 250 412 200C412 150 362 100 362 100C362 100 362 0 256 0Z" />
+                            </svg>
+                        </div>
+
+                        <div class="absolute bottom-4 left-4 right-4 font-mrz text-sm leading-relaxed text-gray-800 z-20 tracking-widest">
+                            <p id="mrz1">I&lt;BGD368899367&lt;55&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</p>
+                            <p id="mrz2">0001027M4919619BGD&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;1</p>
+                            <p id="mrz3">QUADER&lt;&lt;ABDUL&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-white border-t mt-8 py-6 text-center">
+        <p class="text-gray-600">© 2025 UniCard Tools.</p>
+        <p class="text-xs text-gray-400 mt-1">Disclaimer: This tool is for educational/mockup purposes only. Do not use for forgery.</p>
+    </footer>
+
+    <script>
+        function updateCard() {
+            // Text Mappings
+            document.getElementById('outNameBn').innerText = document.getElementById('inNameBn').value;
+            document.getElementById('outNameEn').innerText = document.getElementById('inNameEn').value;
+            document.getElementById('outFather').innerText = document.getElementById('inFather').value;
+            document.getElementById('outMother').innerText = document.getElementById('inMother').value;
+            document.getElementById('outDob').innerText = document.getElementById('inDob').value;
+            document.getElementById('outNid').innerText = document.getElementById('inNid').value;
+            
+            document.getElementById('outAddress').innerText = document.getElementById('inAddress').value;
+            document.getElementById('outBlood').innerText = document.getElementById('inBlood').value;
+            document.getElementById('outPob').innerText = document.getElementById('inPob').value;
+            document.getElementById('outIssue').innerText = document.getElementById('inIssue').value;
+
+            generateMRZ();
+        }
+
+        function loadImage(input, targetIds) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    targetIds.forEach(id => {
+                        document.getElementById(id).src = e.target.result;
+                    });
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Simplified MRZ Generator Logic (Visual Simulation)
+        function generateMRZ() {
+            const nid = document.getElementById('inNid').value || '0000000000';
+            const name = document.getElementById('inNameEn').value || 'UNKNOWN';
+            const dob = document.getElementById('inDob').value; 
+            
+            // Parse Name for MRZ (SURNAME<<GIVEN<NAMES)
+            // For simplicity, splitting by space and joining with <<
+            let mrzName = name.toUpperCase().replace(/ /g, '<<');
+            mrzName = mrzName.padEnd(30, '<'); // Pad to length
+
+            // Line 1
+            let line1 = `I<BGD${nid.substring(0, 9)}<${Math.floor(Math.random()*9)}<<<<<<<<<<<<<`;
+            
+            // Line 2 (Simulation of dates/checksums)
+            let line2 = `9201027M2812315BGD<<<<<<<<<<<${Math.floor(Math.random()*9)}`;
+            
+            // Line 3
+            let line3 = `${mrzName.substring(0, 28)}`;
+
+            document.getElementById('mrz1').innerText = line1;
+            document.getElementById('mrz2').innerText = line2;
+            document.getElementById('mrz3').innerText = line3;
+        }
+
+        function downloadSide(elementId) {
+            const element = document.getElementById(elementId);
+            html2canvas(element, {
+                scale: 3, // High resolution
+                useCORS: true,
+                backgroundColor: "#eefcf6"
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `Smart_NID_${elementId}.png`;
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            });
+        }
+
+        // Init
+        updateCard();
+    </script>
+</body>
+</html>
