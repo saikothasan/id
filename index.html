@@ -3,7 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UniCard Maker - Student ID Generator</title>
+    
+    <title>UniCard Maker - Professional Student ID Generator</title>
+    <meta name="description" content="Create professional University Student ID cards instantly with UniCard Maker. Free online tool for students.">
+    <meta name="keywords" content="ID Card Maker, Student ID, Dhaka University ID, Card Generator, Online ID Creator">
+    <meta name="author" content="DrKingBD">
+    <link rel="canonical" href="https://kingcc.web.app/">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kingcc.web.app/">
+    <meta property="og:title" content="UniCard Maker - Student ID Generator">
+    <meta property="og:description" content="Create professional University Student ID cards instantly.">
+    <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/en/thumb/c/cb/Dhaka_University_logo.svg/1200px-Dhaka_University_logo.svg.png">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
@@ -24,7 +36,7 @@
 
         /* University Name Font */
         .uni-font {
-            font-family: 'Tinos', serif; /* Similar to the serif font in the image */
+            font-family: 'Tinos', serif;
         }
 
         .watermark {
@@ -39,150 +51,204 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen p-6">
+<body class="bg-gray-100 min-h-screen flex flex-col">
 
-    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
-        <div class="lg:col-span-5 bg-white p-6 rounded-xl shadow-lg h-fit">
-            <h2 class="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">ID Card Details</h2>
+    <nav class="bg-blue-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <a href="/" class="font-bold text-xl flex items-center gap-2">
+                    <span class="bg-white text-blue-900 px-2 py-1 rounded">Uni</span>Card
+                </a>
+
+                <div class="hidden md:flex space-x-6 items-center">
+                    <a href="/" class="hover:text-blue-300 transition">Home</a>
+                    <a href="/nid" class="hover:text-blue-300 transition">NID Maker</a>
+                    <a href="/drive" class="hover:text-blue-300 transition">Driving License</a>
+                    <a href="/cc-gen" class="hover:text-blue-300 transition">CC Generator</a>
+                    <a href="/cc-checker" class="hover:text-blue-300 transition">CC Checker</a>
+                </div>
+
+                <a href="https://t.me/drkingbd" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-bold py-2 px-4 rounded-full transition flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12.268 12.268 0 0 0-.294 0zM10.14 14.51l.202 2.683a1.2 1.2 0 0 0 .965-.5l1.322-1.266 2.728 2.013c.5.274 1.28.137 1.463-.455l2.655-12.5c.267-1.078-1.252-1.548-1.776-.777L3.765 12.482c-.886.354-.88 1.227.194 1.538l3.5 1.092 1.22 3.844a.6.6 0 0 0 1.15-.2l-1.08-3.412 6.8-4.85-5.409 4.016z"/></svg>
+                    Telegram
+                </a>
+            </div>
+            <div class="md:hidden flex space-x-4 overflow-x-auto pb-3 text-sm whitespace-nowrap">
+                <a href="/" class="hover:text-blue-300">Home</a>
+                <a href="/nid" class="hover:text-blue-300">NID Maker</a>
+                <a href="/drive" class="hover:text-blue-300">Driving License</a>
+                <a href="/cc-gen" class="hover:text-blue-300">CC Gen</a>
+                <a href="/cc-checker" class="hover:text-blue-300">CC Checker</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="bg-blue-100 border-b border-blue-200 text-center py-2">
+        <p class="text-blue-800 text-sm">
+            Join our official Telegram channel for updates: 
+            <a href="https://t.me/drkingbd" target="_blank" class="font-bold underline hover:text-blue-900">@drkingbd</a>
+        </p>
+    </div>
+
+    <div class="flex-grow p-6">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            <div class="space-y-3">
-                <div>
-                    <label class="text-xs font-semibold text-gray-500 uppercase">University Name</label>
-                    <input type="text" id="inputUniName" value="UNIVERSITY OF DHAKA" class="w-full border rounded p-2 text-sm" oninput="updateCard()">
-                </div>
-                <div>
-                    <label class="text-xs font-semibold text-gray-500 uppercase">Department</label>
-                    <input type="text" id="inputDept" value="Department of Accounting" class="w-full border rounded p-2 text-sm" oninput="updateCard()">
-                </div>
+            <div class="lg:col-span-5 bg-white p-6 rounded-xl shadow-lg h-fit">
+                <h2 class="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">ID Card Details</h2>
+                
+                <div class="space-y-3">
+                    <div>
+                        <label class="text-xs font-semibold text-gray-500 uppercase">University Name</label>
+                        <input type="text" id="inputUniName" value="UNIVERSITY OF DHAKA" class="w-full border rounded p-2 text-sm" oninput="updateCard()">
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-500 uppercase">Department</label>
+                        <input type="text" id="inputDept" value="Department of Accounting" class="w-full border rounded p-2 text-sm" oninput="updateCard()">
+                    </div>
 
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="text-xs font-semibold text-gray-500 uppercase">Uni Logo</label>
-                        <input type="file" id="inputLogo" accept="image/*" class="w-full text-xs border rounded p-1" onchange="loadImage(this, 'imgLogo')">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="opacity-50 pointer-events-none grayscale">
+                            <label class="text-xs font-semibold text-gray-500 uppercase">Uni Logo (Fixed)</label>
+                            <input type="text" disabled value="Default Logo" class="w-full text-xs border rounded p-2 bg-gray-100">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-500 uppercase">Student Photo</label>
+                            <input type="file" id="inputPhoto" accept="image/*" class="w-full text-xs border rounded p-1" onchange="loadImage(this, 'imgPhoto')">
+                        </div>
                     </div>
-                    <div>
-                        <label class="text-xs font-semibold text-gray-500 uppercase">Student Photo</label>
-                        <input type="file" id="inputPhoto" accept="image/*" class="w-full text-xs border rounded p-1" onchange="loadImage(this, 'imgPhoto')">
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-xs font-semibold text-gray-500 uppercase">Name</label>
+                            <input type="text" id="inputName" value="MD SABUJ" class="w-full border rounded p-2 text-sm" oninput="updateCard()">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-500 uppercase">Roll No</label>
+                            <input type="text" id="inputRoll" value="160101443" class="w-full border rounded p-2 text-sm" oninput="updateCard()">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-xs font-semibold text-gray-500 uppercase">Date of Birth</label>
+                            <input type="text" id="inputDob" value="26.10.1992" class="w-full border rounded p-2 text-sm" oninput="updateCard()">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-500 uppercase">Phone</label>
+                            <input type="text" id="inputPhone" value="01718447558" class="w-full border rounded p-2 text-sm" oninput="updateCard()">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-xs font-semibold text-gray-500 uppercase">Session</label>
+                            <input type="text" id="inputSession" value="2025-26" class="w-full border rounded p-2 text-sm" oninput="updateCard()">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-500 uppercase">Blood Group</label>
+                            <input type="text" id="inputBlood" value="A+ve" class="w-full border rounded p-2 text-sm" oninput="updateCard()">
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-xs font-semibold text-gray-500 uppercase">Student Sign</label>
+                            <input type="file" id="inputSignStudent" accept="image/*" class="w-full text-xs border rounded p-1" onchange="loadImage(this, 'imgSignStudent')">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-500 uppercase">Authority Sign</label>
+                            <input type="file" id="inputSignAuth" accept="image/*" class="w-full text-xs border rounded p-1" onchange="loadImage(this, 'imgSignAuth')">
+                        </div>
+                    </div>
+
+                    <button onclick="downloadCard()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg mt-4 transition shadow-md flex justify-center items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Download ID Card
+                    </button>
+                    
+                    <div class="text-center mt-2">
+                         <a href="https://t.me/drkingbd" class="text-xs text-gray-500 hover:text-blue-600">Powered by @drkingbd</a>
                     </div>
                 </div>
+            </div>
 
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="text-xs font-semibold text-gray-500 uppercase">Name</label>
-                        <input type="text" id="inputName" value="MD SABUJ" class="w-full border rounded p-2 text-sm" oninput="updateCard()">
-                    </div>
-                    <div>
-                        <label class="text-xs font-semibold text-gray-500 uppercase">Roll No</label>
-                        <input type="text" id="inputRoll" value="160101443" class="w-full border rounded p-2 text-sm" oninput="updateCard()">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="text-xs font-semibold text-gray-500 uppercase">Date of Birth</label>
-                        <input type="text" id="inputDob" value="26.10.1992" class="w-full border rounded p-2 text-sm" oninput="updateCard()">
-                    </div>
-                    <div>
-                        <label class="text-xs font-semibold text-gray-500 uppercase">Phone</label>
-                        <input type="text" id="inputPhone" value="01718447558" class="w-full border rounded p-2 text-sm" oninput="updateCard()">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="text-xs font-semibold text-gray-500 uppercase">Session</label>
-                        <input type="text" id="inputSession" value="2025-26" class="w-full border rounded p-2 text-sm" oninput="updateCard()">
-                    </div>
-                    <div>
-                        <label class="text-xs font-semibold text-gray-500 uppercase">Blood Group</label>
-                        <input type="text" id="inputBlood" value="A+ve" class="w-full border rounded p-2 text-sm" oninput="updateCard()">
-                    </div>
+            <div class="lg:col-span-7 flex flex-col items-center justify-start pt-4">
+                <div class="flex justify-between w-full max-w-[600px] mb-2">
+                    <h3 class="text-lg font-semibold text-gray-500">Live Preview</h3>
+                    <span class="text-xs text-gray-400">High Quality Print Ready</span>
                 </div>
                 
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="text-xs font-semibold text-gray-500 uppercase">Student Sign</label>
-                        <input type="file" id="inputSignStudent" accept="image/*" class="w-full text-xs border rounded p-1" onchange="loadImage(this, 'imgSignStudent')">
-                    </div>
-                    <div>
-                        <label class="text-xs font-semibold text-gray-500 uppercase">Authority Sign</label>
-                        <input type="file" id="inputSignAuth" accept="image/*" class="w-full text-xs border rounded p-1" onchange="loadImage(this, 'imgSignAuth')">
-                    </div>
-                </div>
-
-                <button onclick="downloadCard()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg mt-4 transition">
-                    Download ID Card
-                </button>
-            </div>
-        </div>
-
-        <div class="lg:col-span-7 flex flex-col items-center justify-start">
-            <h3 class="text-lg font-semibold text-gray-500 mb-4">Live Preview</h3>
-            
-            <div class="bg-white p-1 border border-gray-300 shadow-2xl">
-                <div id="idCard" class="id-card-container bg-white p-4 relative z-10">
-                    
-                    <img id="watermarkLogo" src="https://upload.wikimedia.org/wikipedia/en/thumb/c/cb/Dhaka_University_logo.svg/1200px-Dhaka_University_logo.svg.png" class="watermark grayscale" alt="">
-
-                    <div class="flex justify-between items-start mb-2 relative z-20">
-                        <div class="w-16 h-16 flex-shrink-0">
-                            <img id="imgLogo" src="https://upload.wikimedia.org/wikipedia/en/thumb/c/cb/Dhaka_University_logo.svg/1200px-Dhaka_University_logo.svg.png" class="w-full h-full object-contain" alt="Logo">
-                        </div>
-
-                        <div class="flex-grow text-center px-2">
-                            <h1 id="dispUniName" class="uni-font text-2xl font-bold text-gray-900 uppercase tracking-tight">UNIVERSITY OF DHAKA</h1>
-                            <h2 class="text-red-600 font-serif text-lg font-semibold">Student's Identity Card</h2>
-                            <h3 id="dispDept" class="text-black font-semibold text-sm">Department of Accounting</h3>
-                        </div>
-
-                        <div class="w-24 h-28 border border-gray-300 bg-gray-100 flex-shrink-0 overflow-hidden">
-                            <img id="imgPhoto" src="https://via.placeholder.com/150" class="w-full h-full object-cover" alt="Student">
-                        </div>
-                    </div>
-
-                    <div class="flex justify-center mb-4 relative z-20">
-                        <span class="bg-green-700 text-white px-6 py-1 rounded-full font-bold text-sm shadow-sm border-2 border-white ring-1 ring-green-700">
-                            Student ID Card
-                        </span>
-                    </div>
-
-                    <div class="grid grid-cols-12 gap-1 text-sm font-bold text-gray-800 relative z-20 pl-4">
-                        <div class="col-span-3 text-gray-900">Name</div>
-                        <div class="col-span-9">: <span id="dispName" class="uppercase text-black">MD SABUJ</span></div>
-
-                        <div class="col-span-3 text-gray-900">Roll No</div>
-                        <div class="col-span-5">: <span id="dispRoll">160101443</span></div>
-                        <div class="col-span-4"></div> <div class="col-span-12 flex flex-wrap">
-                            <div class="w-1/4">Date of Birth</div>
-                            <div class="w-5/12">: <span id="dispDob">26.10.1992</span></div>
-                            <div class="w-1/3 pl-2">Session : <span id="dispSession">2025-26</span></div>
-                        </div>
-
-                        <div class="col-span-12 flex flex-wrap mt-1">
-                            <div class="w-1/4">Phone</div>
-                            <div class="w-5/12">: <span id="dispPhone">01718447558</span></div>
-                            <div class="w-1/3 pl-2">Blood Group : <span id="dispBlood">A+ve</span></div>
-                        </div>
-                    </div>
-
-                    <div class="absolute bottom-6 left-6 right-6 flex justify-between items-end z-20">
-                        <div class="flex flex-col items-center">
-                            <img id="imgSignStudent" src="https://via.placeholder.com/100x40?text=Signature" class="h-8 object-contain mb-1">
-                            <p class="text-xs border-t border-gray-800 px-1 pt-0.5 font-semibold">Signature of Student</p>
-                        </div>
+                <div class="bg-white p-1 border border-gray-300 shadow-2xl">
+                    <div id="idCard" class="id-card-container bg-white p-4 relative z-10">
                         
-                        <div class="flex flex-col items-center">
-                            <img id="imgSignAuth" src="https://via.placeholder.com/100x40?text=Signature" class="h-8 object-contain mb-1">
-                            <p class="text-xs border-t border-gray-800 px-1 pt-0.5 font-semibold">Signature of Authority</p>
-                        </div>
-                    </div>
+                        <img id="watermarkLogo" src="https://upload.wikimedia.org/wikipedia/en/thumb/c/cb/Dhaka_University_logo.svg/1200px-Dhaka_University_logo.svg.png" class="watermark grayscale" alt="">
 
+                        <div class="flex justify-between items-start mb-2 relative z-20">
+                            <div class="w-16 h-16 flex-shrink-0">
+                                <img id="imgLogo" src="https://upload.wikimedia.org/wikipedia/en/thumb/c/cb/Dhaka_University_logo.svg/1200px-Dhaka_University_logo.svg.png" class="w-full h-full object-contain" alt="Logo">
+                            </div>
+
+                            <div class="flex-grow text-center px-2">
+                                <h1 id="dispUniName" class="uni-font text-2xl font-bold text-gray-900 uppercase tracking-tight">UNIVERSITY OF DHAKA</h1>
+                                <h2 class="text-red-600 font-serif text-lg font-semibold">Student's Identity Card</h2>
+                                <h3 id="dispDept" class="text-black font-semibold text-sm">Department of Accounting</h3>
+                            </div>
+
+                            <div class="w-24 h-28 border border-gray-300 bg-gray-100 flex-shrink-0 overflow-hidden">
+                                <img id="imgPhoto" src="https://via.placeholder.com/150" class="w-full h-full object-cover" alt="Student">
+                            </div>
+                        </div>
+
+                        <div class="flex justify-center mb-4 relative z-20">
+                            <span class="bg-green-700 text-white px-6 py-1 rounded-full font-bold text-sm shadow-sm border-2 border-white ring-1 ring-green-700">
+                                Student ID Card
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-12 gap-1 text-sm font-bold text-gray-800 relative z-20 pl-4">
+                            <div class="col-span-3 text-gray-900">Name</div>
+                            <div class="col-span-9">: <span id="dispName" class="uppercase text-black">MD SABUJ</span></div>
+
+                            <div class="col-span-3 text-gray-900">Roll No</div>
+                            <div class="col-span-5">: <span id="dispRoll">160101443</span></div>
+                            <div class="col-span-4"></div> <div class="col-span-12 flex flex-wrap">
+                                <div class="w-1/4">Date of Birth</div>
+                                <div class="w-5/12">: <span id="dispDob">26.10.1992</span></div>
+                                <div class="w-1/3 pl-2">Session : <span id="dispSession">2025-26</span></div>
+                            </div>
+
+                            <div class="col-span-12 flex flex-wrap mt-1">
+                                <div class="w-1/4">Phone</div>
+                                <div class="w-5/12">: <span id="dispPhone">01718447558</span></div>
+                                <div class="w-1/3 pl-2">Blood Group : <span id="dispBlood">A+ve</span></div>
+                            </div>
+                        </div>
+
+                        <div class="absolute bottom-6 left-6 right-6 flex justify-between items-end z-20">
+                            <div class="flex flex-col items-center">
+                                <img id="imgSignStudent" src="https://via.placeholder.com/100x40?text=Signature" class="h-8 object-contain mb-1">
+                                <p class="text-xs border-t border-gray-800 px-1 pt-0.5 font-semibold">Signature of Student</p>
+                            </div>
+                            
+                            <div class="flex flex-col items-center">
+                                <img id="imgSignAuth" src="https://via.placeholder.com/100x40?text=Signature" class="h-8 object-contain mb-1">
+                                <p class="text-xs border-t border-gray-800 px-1 pt-0.5 font-semibold">Signature of Authority</p>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
+                <p class="mt-4 text-sm text-gray-500">Note: This is a client-side tool. No data is uploaded to any server.</p>
             </div>
-            <p class="mt-4 text-sm text-gray-500">Note: This is a client-side tool. No data is uploaded to any server.</p>
         </div>
     </div>
+
+    <footer class="bg-white border-t mt-8 py-6 text-center">
+        <p class="text-gray-600">© 2025 UniCard Maker. All rights reserved.</p>
+        <p class="text-sm text-gray-400 mt-1">SEO Base: kingcc.web.app | Telegram: <a href="https://t.me/drkingbd" class="text-blue-500 hover:underline">@drkingbd</a></p>
+    </footer>
 
     <script>
         // Function to handle text updates
@@ -197,16 +263,12 @@
             document.getElementById('dispBlood').innerText = document.getElementById('inputBlood').value;
         }
 
-        // Function to handle image uploads (Photo, Logo, Signatures)
+        // Function to handle image uploads (Photo & Signatures Only - Logo removed from input)
         function loadImage(input, targetId) {
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
                 reader.onload = function (e) {
                     document.getElementById(targetId).src = e.target.result;
-                    // If uploading main logo, update watermark too
-                    if(targetId === 'imgLogo') {
-                        document.getElementById('watermarkLogo').src = e.target.result;
-                    }
                 };
                 reader.readAsDataURL(input.files[0]);
             }
