@@ -3,417 +3,421 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student ID Card Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     
-    <!-- SEO Meta Tags -->
-    <title>Student ID Card Maker | KingCC Tools</title>
-    <meta name="description" content="Create professional Student ID cards instantly online. Free tool to generate printable student IDs like University of Dhaka format.">
-    <meta name="keywords" content="student id maker, id card generator, fake id card, university id card, kingcc, drkingbd">
-    <meta name="author" content="KingCC">
-    <meta name="robots" content="index, follow">
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://kingcc.web.app/">
-    <meta property="og:title" content="Student ID Card Maker | KingCC">
-    <meta property="og:description" content="Create professional Student ID cards instantly online with KingCC Tools.">
-    <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/en/thumb/c/cb/Dhaka_University_logo.svg/1200px-Dhaka_University_logo.svg.png">
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://kingcc.web.app/">
-    <meta property="twitter:title" content="Student ID Card Maker | KingCC">
-    <meta property="twitter:description" content="Create professional Student ID cards instantly online with KingCC Tools.">
-    <meta property="twitter:image" content="https://upload.wikimedia.org/wikipedia/en/thumb/c/cb/Dhaka_University_logo.svg/1200px-Dhaka_University_logo.svg.png">
-
-    <link rel="canonical" href="https://kingcc.web.app/">
-
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- HTML2Canvas -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    
-    <!-- Google Fonts -->
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Tinos:wght@700&family=Great+Vibes&display=swap');
+        :root {
+            --primary-color: #1a237e; /* Dark Blue */
+            --secondary-color: #c62828; /* Red */
+            --accent-color: #2e7d32; /* Green Badge */
+            --bg-color: #f4f6f8;
+        }
 
-        /* Custom styles */
-        .id-card-container {
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            justify-content: center;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        /* --- Left Side: Form --- */
+        .form-panel {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            flex: 1;
+            min-width: 300px;
+            max-width: 500px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box; /* Fix padding issue */
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-download {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-download:hover {
+            background-color: #0d1561;
+        }
+
+        /* --- Right Side: ID Card Preview --- */
+        .preview-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: start;
+        }
+
+        /* The ID Card Itself - Fixed Dimension for Print Quality */
+        #id-card {
             width: 600px;
             height: 380px;
             background-color: white;
             border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            padding: 20px;
             position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            font-family: 'Roboto', sans-serif;
-            /* Prevent selection during drag */
-            user-select: none;
+            box-sizing: border-box;
+            background-image: radial-gradient(circle at center, rgba(26, 35, 126, 0.03) 0%, transparent 70%);
+            border: 1px solid #eee;
         }
 
-        .uni-font {
-            font-family: 'Tinos', serif;
+        /* Card Layout */
+        .header {
+            text-align: center;
+            position: relative;
+            margin-bottom: 10px;
         }
 
-        /* Signature Font - Adjusted to look like pen ink */
-        .sign-font {
-            font-family: 'Great Vibes', cursive;
-            font-weight: 400;
-            font-size: 1.6rem; 
-            line-height: 0.8;
-            color: #1a1a1a;
-            transform: rotate(-3deg);
-        }
-
-        .watermark {
+        /* Logo Placement */
+        .uni-logo {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            opacity: 0.08;
-            width: 200px;
-            pointer-events: none;
-            z-index: 0;
+            left: 0;
+            top: 0;
+            width: 60px;
+            height: auto;
         }
 
-        /* Mobile Menu Animation */
-        #mobile-menu {
-            transition: max-height 0.3s ease-in-out;
-            max-height: 0;
+        .header h2 {
+            color: var(--primary-color);
+            font-size: 26px;
+            margin: 5px 0 2px 0;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        .header h3 {
+            color: var(--secondary-color);
+            font-size: 18px;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .header h4 {
+            color: #333;
+            font-size: 14px;
+            margin: 2px 0 15px 0;
+            font-weight: 500;
+        }
+
+        .card-body {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .details {
+            flex: 1;
+            padding-right: 10px;
+        }
+
+        .student-photo-container {
+            width: 110px;
+            height: 130px;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             overflow: hidden;
         }
-        #mobile-menu.open {
-            max-height: 400px;
+
+        .student-photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
+
+        /* Green Badge */
+        .badge-container {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .id-badge {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 4px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* Data Table Layout */
+        .data-row {
+            display: flex;
+            margin-bottom: 6px;
+            font-size: 15px;
+            color: #000;
+            font-weight: 600;
+        }
+
+        .label {
+            width: 100px;
+            color: #333;
+        }
+
+        .separator {
+            width: 15px;
+        }
+
+        .value {
+            flex: 1;
+            color: #000;
+            font-weight: 700;
+        }
+
+        /* Footer Signatures */
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .signature-box {
+            text-align: center;
+            width: 120px;
+        }
+
+        .signature-line {
+            border-top: 1px solid #333;
+            margin-top: 5px;
+            padding-top: 5px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .sig-img {
+            height: 40px;
+            object-fit: contain;
+        }
+
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen flex flex-col">
+<body>
 
-    <!-- Telegram Promo Bar -->
-    <a href="https://t.me/drkingbd" target="_blank" class="bg-blue-500 text-white text-center py-2 px-4 text-sm font-bold hover:bg-blue-600 transition flex justify-center items-center gap-2">
-        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 11.944 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-        Join our Official Telegram Channel: @drkingbd
-    </a>
+    <h1>University ID Card Generator</h1>
 
-    <!-- Navbar -->
-    <nav class="bg-white shadow-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <a href="/" class="flex-shrink-0 flex items-center">
-                        <span class="font-bold text-2xl text-blue-600 tracking-tighter">KingCC</span>
-                    </a>
-                </div>
-                
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center space-x-4">
-                    <a href="/" class="text-gray-900 font-medium px-3 py-2 rounded-md bg-gray-100">Home</a>
-                    <a href="/nid" class="text-gray-500 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition">NID Maker</a>
-                    <a href="/drive" class="text-gray-500 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition">Driving License</a>
-                    <a href="/cc-gen" class="text-gray-500 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition">CC Generator</a>
-                    <a href="/cc-checker" class="text-gray-500 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition">CC Checker</a>
-                </div>
-
-                <!-- Mobile menu button -->
-                <div class="flex items-center md:hidden">
-                    <button onclick="toggleMenu()" class="text-gray-500 hover:text-gray-700 focus:outline-none p-2">
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="md:hidden bg-gray-50 border-t border-gray-200">
-            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="/" class="block text-blue-700 font-bold px-3 py-2 rounded-md text-base">Home</a>
-                <a href="/nid" class="block text-gray-600 hover:text-blue-600 hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium">NID Maker</a>
-                <a href="/drive" class="block text-gray-600 hover:text-blue-600 hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium">Driving License</a>
-                <a href="/cc-gen" class="block text-gray-600 hover:text-blue-600 hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium">CC Generator</a>
-                <a href="/cc-checker" class="block text-gray-600 hover:text-blue-600 hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium">CC Checker</a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Content -->
-    <main class="flex-grow p-6">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <div class="container">
+        
+        <div class="form-panel">
+            <h3>Enter Details</h3>
             
-            <!-- LEFT COLUMN: Input Form -->
-            <div class="lg:col-span-5 bg-white p-6 rounded-xl shadow-lg h-fit border border-gray-100">
-                <h1 class="text-2xl font-bold mb-1 text-gray-800">Create Student ID</h1>
-                <p class="text-gray-500 text-sm mb-6">Fill in the details below to generate the card.</p>
-                
-                <div class="space-y-4">
-                    <!-- University Name -->
-                    <div>
-                        <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">University Name</label>
-                        <input type="text" id="inputUniName" value="UNIVERSITY OF DHAKA" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block p-2.5 transition" oninput="updateCard()">
-                    </div>
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="nameInput" placeholder="MD SABUJ" oninput="updateCard()">
+            </div>
 
-                    <div class="grid grid-cols-1 gap-4">
-                        <div>
-                            <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Department</label>
-                            <input type="text" id="inputDept" value="Department of Accounting" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block p-2.5 transition" oninput="updateCard()">
-                        </div>
-                    </div>
+            <div class="form-group">
+                <label>Department</label>
+                <input type="text" id="deptInput" placeholder="Department of Accounting" value="Department of Accounting" oninput="updateCard()">
+            </div>
 
-                    <!-- Photo Upload -->
-                    <div>
-                        <label class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1 block">Student Photo</label>
-                        <label class="flex flex-col items-center justify-center w-full h-24 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
-                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                                <svg class="w-6 h-6 mb-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                <p class="text-xs text-gray-500">Click to upload photo</p>
-                            </div>
-                            <input type="file" id="inputPhoto" accept="image/*" class="hidden" onchange="loadImage(this, 'imgPhoto')">
-                        </label>
-                    </div>
-
-                    <!-- Personal Details -->
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Name</label>
-                            <input type="text" id="inputName" value="MD SABUJ" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block p-2.5" oninput="updateCard()">
-                        </div>
-                        <div>
-                            <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Roll No</label>
-                            <input type="text" id="inputRoll" value="160101443" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block p-2.5" oninput="updateCard()">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Date of Birth</label>
-                            <input type="text" id="inputDob" value="26.10.1992" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block p-2.5" oninput="updateCard()">
-                        </div>
-                        <div>
-                            <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Phone</label>
-                            <input type="text" id="inputPhone" value="01718447558" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block p-2.5" oninput="updateCard()">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Session</label>
-                            <input type="text" id="inputSession" value="2025-26" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block p-2.5" oninput="updateCard()">
-                        </div>
-                        <div>
-                            <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Blood Group</label>
-                            <input type="text" id="inputBlood" value="A+ve" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block p-2.5" oninput="updateCard()">
-                        </div>
-                    </div>
-                    
-                    <!-- Signatures (Text Input) -->
-                    <div class="pt-2 border-t mt-2">
-                        <h3 class="text-sm font-bold text-gray-700 mb-2">Signatures (Type Name)</h3>
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Student Sign</label>
-                                <input type="text" id="inputSignStudent" value="Md Sabuj" class="w-full bg-white border border-blue-300 text-blue-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block p-2.5 font-serif italic" placeholder="Type name..." oninput="updateCard()">
-                            </div>
-                            <div>
-                                <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Authority Sign</label>
-                                <input type="text" id="inputSignAuth" value="Chairman" class="w-full bg-white border border-blue-300 text-blue-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block p-2.5 font-serif italic" placeholder="Type name..." oninput="updateCard()">
-                            </div>
-                        </div>
-                    </div>
-
-                    <button onclick="downloadCard()" class="w-full bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-bold py-3.5 rounded-lg mt-4 transition transform hover:scale-[1.02] shadow-md flex justify-center items-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                        Download ID Card
-                    </button>
+            <div class="form-group" style="display:flex; gap:10px;">
+                <div style="flex:1;">
+                    <label>Roll No</label>
+                    <input type="text" id="rollInput" placeholder="160101443" oninput="updateCard()">
+                </div>
+                <div style="flex:1;">
+                    <label>Session</label>
+                    <input type="text" id="sessionInput" placeholder="2025-26" oninput="updateCard()">
                 </div>
             </div>
 
-            <!-- RIGHT COLUMN: Preview -->
-            <div class="lg:col-span-7 flex flex-col items-center justify-start pt-0 lg:pt-8">
-                <div class="sticky top-24">
-                    <h3 class="text-lg font-semibold text-gray-500 mb-4 text-center">Live Preview</h3>
+            <div class="form-group" style="display:flex; gap:10px;">
+                <div style="flex:1;">
+                    <label>Date of Birth</label>
+                    <input type="text" id="dobInput" placeholder="26.10.1992" oninput="updateCard()">
+                </div>
+                <div style="flex:1;">
+                    <label>Blood Group</label>
+                    <input type="text" id="bgInput" placeholder="A+ve" oninput="updateCard()">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="text" id="phoneInput" placeholder="01718447558" oninput="updateCard()">
+            </div>
+
+            <div class="form-group">
+                <label>Student Photo</label>
+                <input type="file" id="photoUpload" accept="image/*" onchange="loadImage(event)">
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-download" onclick="downloadCard()">Download ID Card</button>
+            </div>
+        </div>
+
+        <div class="preview-panel">
+            
+            <div id="id-card">
+                <div class="header">
+                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/9/95/Dhaka_University_logo.svg/1200px-Dhaka_University_logo.svg.png" alt="Logo" class="uni-logo">
                     
-                    <!-- THE ID CARD WRAPPER -->
-                    <div class="bg-white p-1 border border-gray-200 shadow-2xl rounded-xl">
-                        <div id="idCard" class="id-card-container bg-white p-5 relative z-10">
-                            
-                            <!-- Fixed Watermark -->
-                            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/cb/Dhaka_University_logo.svg/1200px-Dhaka_University_logo.svg.png" class="watermark grayscale" alt="Watermark">
+                    <h2>University of Dhaka</h2>
+                    <h3>Student's Identity Card</h3>
+                    <h4 id="cardDept">Department of Accounting</h4>
+                </div>
 
-                            <!-- Header Section -->
-                            <div class="flex justify-between items-start mb-3 relative z-20">
-                                <!-- Left Logo (FIXED) -->
-                                <div class="w-[70px] h-[70px] flex-shrink-0 mt-1">
-                                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/cb/Dhaka_University_logo.svg/1200px-Dhaka_University_logo.svg.png" class="w-full h-full object-contain drop-shadow-sm" alt="Uni Logo">
-                                </div>
-
-                                <!-- Center Text -->
-                                <div class="flex-grow text-center px-2 pt-1">
-                                    <h1 id="dispUniName" class="uni-font text-[26px] leading-tight font-bold text-[#1a1a1a] uppercase tracking-tight transform scale-y-110">UNIVERSITY OF DHAKA</h1>
-                                    <h2 class="text-[#cf2e2e] font-serif text-[22px] font-semibold tracking-wide mt-1">Student's Identity Card</h2>
-                                    <h3 id="dispDept" class="text-black font-bold text-[14px] mt-0.5">Department of Accounting</h3>
-                                </div>
-
-                                <!-- Right Photo -->
-                                <div class="w-[100px] h-[120px] border border-gray-400 bg-gray-100 flex-shrink-0 overflow-hidden shadow-sm">
-                                    <img id="imgPhoto" src="https://via.placeholder.com/150" class="w-full h-full object-cover border border-gray-300" alt="Student">
-                                </div>
-                            </div>
-
-                            <!-- Green Pill Banner -->
-                            <div class="flex justify-center mb-5 relative z-20">
-                                <div class="bg-[#2e7d32] text-white px-8 py-1.5 rounded-full font-bold text-[15px] shadow-sm border-2 border-white ring-1 ring-[#2e7d32] tracking-wide">
-                                    Student ID Card
-                                </div>
-                            </div>
-
-                            <!-- Details Grid -->
-                            <div class="text-[15px] font-bold text-[#1a1a1a] relative z-20 pl-4">
-                                <!-- Name Row -->
-                                <div class="flex items-center mb-3">
-                                    <div class="w-[95px] font-black text-gray-900">Name</div>
-                                    <div class="flex-grow">: <span id="dispName" class="uppercase ml-1">MD SABUJ</span></div>
-                                </div>
-
-                                <!-- Roll Row -->
-                                <div class="flex items-center mb-3">
-                                    <div class="w-[95px] font-black text-gray-900">Roll No</div>
-                                    <div class="flex-grow">: <span id="dispRoll" class="ml-1">160101443</span></div>
-                                </div>
-
-                                <!-- Session Row (Complex) -->
-                                <div class="flex items-center mb-3">
-                                    <div class="w-[95px] font-black text-gray-900 flex-shrink-0">Date of Birth</div>
-                                    <div class="w-[140px] whitespace-nowrap">: <span id="dispDob" class="ml-1">26.10.1992</span></div>
-                                    
-                                    <!-- Pushed to right -->
-                                    <div class="flex-grow flex justify-end pr-4">
-                                        <span class="font-black text-gray-900 mr-2">Session:</span>
-                                        <span id="dispSession">2025-26</span>
-                                    </div>
-                                </div>
-
-                                <!-- Phone Row (Complex) -->
-                                <div class="flex items-center">
-                                    <div class="w-[95px] font-black text-gray-900 flex-shrink-0">Phone</div>
-                                    <div class="w-[140px] whitespace-nowrap">: <span id="dispPhone" class="ml-1">01718447558</span></div>
-                                    
-                                    <!-- Pushed to right -->
-                                    <div class="flex-grow flex justify-end pr-4">
-                                        <span class="font-black text-gray-900 mr-2">Blood Group:</span>
-                                        <span id="dispBlood">A+ve</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Footer Signatures -->
-                            <div class="absolute bottom-8 left-8 right-8 flex justify-between items-end z-20">
-                                <div class="flex flex-col items-center min-w-[100px]">
-                                    <div id="dispSignStudent" class="sign-font mb-1">Md Sabuj</div>
-                                    <div class="w-full h-[1px] bg-gray-800 mt-0"></div>
-                                    <p class="text-[10px] mt-0.5 font-bold">Signature of Student</p>
-                                </div>
-                                
-                                <div class="flex flex-col items-center min-w-[100px]">
-                                    <div id="dispSignAuth" class="sign-font mb-1">Chairman</div>
-                                    <div class="w-full h-[1px] bg-gray-800 mt-0"></div>
-                                    <p class="text-[10px] mt-0.5 font-bold">Signature of Authority</p>
-                                </div>
-                            </div>
-                            
-                            <!-- Decorative Curve (Optional, adds faint detail) -->
-                            <div class="absolute bottom-14 left-[42%] w-24 h-10 border-b-2 border-yellow-600 opacity-20 rounded-[100%] pointer-events-none"></div>
-
+                <div class="card-body">
+                    <div class="details">
+                        
+                        <div class="badge-container" style="text-align: left; padding-left: 20px;">
+                            <span class="id-badge">Student ID Card</span>
                         </div>
+
+                        <div class="data-row">
+                            <div class="label">Name</div>
+                            <div class="separator">:</div>
+                            <div class="value" id="cardName">MD SABUJ</div>
+                        </div>
+
+                        <div class="data-row">
+                            <div class="label">Roll No</div>
+                            <div class="separator">:</div>
+                            <div class="value" id="cardRoll">160101443</div>
+                        </div>
+
+                        <div class="data-row">
+                            <div class="label">Date of Birth</div>
+                            <div class="separator">:</div>
+                            <div class="value" id="cardDob">26.10.1992</div>
+                        </div>
+
+                        <div class="data-row">
+                            <div class="label">Phone</div>
+                            <div class="separator">:</div>
+                            <div class="value" id="cardPhone">01718447558</div>
+                        </div>
+
+                         <div class="data-row" style="margin-top: 10px;">
+                            <div class="label">Session</div>
+                            <div class="separator">:</div>
+                            <div class="value" id="cardSession">2025-26</div>
+                        </div>
+
+                         <div class="data-row">
+                            <div class="label">Blood Group</div>
+                            <div class="separator">:</div>
+                            <div class="value" id="cardBg">A+ve</div>
+                        </div>
+
+                    </div>
+
+                    <div class="student-photo-container">
+                        <img id="cardPhoto" src="https://via.placeholder.com/110x130?text=Photo" alt="Student Photo">
+                    </div>
+                </div>
+
+                <div class="footer">
+                    <div class="signature-box">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Signature_sample.svg/1200px-Signature_sample.svg.png" class="sig-img" alt="Student Sign">
+                        <div class="signature-line">Signature of Student</div>
+                    </div>
+                    <div class="signature-box">
+                         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Signature_sample_2.svg/1200px-Signature_sample_2.svg.png" class="sig-img" alt="Chairman Sign">
+                        <div class="signature-line">Signature of Chairman</div>
                     </div>
                 </div>
             </div>
-        </div>
-    </main>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t mt-10">
-        <div class="max-w-7xl mx-auto py-6 px-4 flex justify-between items-center">
-            <p class="text-gray-500 text-sm">© 2025 KingCC Tools. All rights reserved.</p>
-            <div class="flex space-x-4">
-                <a href="https://t.me/drkingbd" class="text-gray-400 hover:text-blue-500">
-                    <span class="sr-only">Telegram</span>
-                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 11.944 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-                </a>
-            </div>
+            <p style="margin-top: 10px; color: #666; font-size: 14px;">Preview matches the provided image design.</p>
         </div>
-    </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <script>
-        function toggleMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
-            if(!menu.classList.contains('hidden')){
-                menu.classList.add('block');
-            } else {
-                menu.classList.remove('block');
-            }
-        }
-
-        // Initialize Mobile Menu as hidden
-        document.getElementById('mobile-menu').classList.add('hidden');
-
+        // Function to update text fields in real-time
         function updateCard() {
-            // Text Fields
-            document.getElementById('dispUniName').innerText = document.getElementById('inputUniName').value;
-            document.getElementById('dispDept').innerText = document.getElementById('inputDept').value;
-            document.getElementById('dispName').innerText = document.getElementById('inputName').value;
-            document.getElementById('dispRoll').innerText = document.getElementById('inputRoll').value;
-            document.getElementById('dispDob').innerText = document.getElementById('inputDob').value;
-            document.getElementById('dispPhone').innerText = document.getElementById('inputPhone').value;
-            document.getElementById('dispSession').innerText = document.getElementById('inputSession').value;
-            document.getElementById('dispBlood').innerText = document.getElementById('inputBlood').value;
-
-            // Signatures (Text to Font)
-            document.getElementById('dispSignStudent').innerText = document.getElementById('inputSignStudent').value;
-            document.getElementById('dispSignAuth').innerText = document.getElementById('inputSignAuth').value;
+            document.getElementById('cardName').innerText = document.getElementById('nameInput').value || "MD SABUJ";
+            document.getElementById('cardDept').innerText = document.getElementById('deptInput').value || "Department of Accounting";
+            document.getElementById('cardRoll').innerText = document.getElementById('rollInput').value || "160101443";
+            document.getElementById('cardSession').innerText = document.getElementById('sessionInput').value || "2025-26";
+            document.getElementById('cardDob').innerText = document.getElementById('dobInput').value || "26.10.1992";
+            document.getElementById('cardBg').innerText = document.getElementById('bgInput').value || "A+ve";
+            document.getElementById('cardPhone').innerText = document.getElementById('phoneInput').value || "01718447558";
         }
 
-        function loadImage(input, targetId) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    document.getElementById(targetId).src = e.target.result;
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
+        // Function to handle Image Upload
+        function loadImage(event) {
+            const image = document.getElementById('cardPhoto');
+            image.src = URL.createObjectURL(event.target.files[0]);
         }
 
+        // Function to Download the Card as an Image
         function downloadCard() {
-            const element = document.getElementById("idCard");
+            const cardElement = document.getElementById("id-card");
             
-            // Visual feedback for button
-            const btn = document.querySelector('button[onclick="downloadCard()"]');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = 'Processing...';
-            btn.disabled = true;
-
-            html2canvas(element, {
-                scale: 4, // High resolution
-                useCORS: true,
-                backgroundColor: "#ffffff",
-                logging: false
-            }).then(canvas => {
+            html2canvas(cardElement, { scale: 2 }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = 'Student_ID_Card_' + document.getElementById('inputRoll').value + '.png';
-                link.href = canvas.toDataURL("image/png", 1.0);
+                link.download = 'student-id-card.png';
+                link.href = canvas.toDataURL();
                 link.click();
-
-                // Restore button
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }).catch(err => {
-                console.error(err);
-                alert("Error generating image. Please try again.");
-                btn.innerHTML = originalText;
-                btn.disabled = false;
             });
         }
     </script>
+
 </body>
 </html>
