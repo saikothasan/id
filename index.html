@@ -59,7 +59,7 @@
         .sign-font {
             font-family: 'Great Vibes', cursive;
             font-weight: 400;
-            font-size: 1.5rem;
+            font-size: 1.8rem; /* Increased size slightly */
             line-height: 1;
             color: #000;
         }
@@ -266,8 +266,8 @@
                                 </div>
                             </div>
 
-                            <!-- Details Grid -->
-                            <div class="grid grid-cols-12 gap-y-1.5 text-[15px] font-bold text-[#1a1a1a] relative z-20 pl-6">
+                            <!-- Details Grid - Increased Gap here for more space -->
+                            <div class="grid grid-cols-12 gap-y-3 text-[15px] font-bold text-[#1a1a1a] relative z-20 pl-6">
                                 <!-- Name Row -->
                                 <div class="col-span-3 font-black">Name</div>
                                 <div class="col-span-9">: <span id="dispName" class="uppercase">MD SABUJ</span></div>
@@ -293,19 +293,19 @@
                                 </div>
                             </div>
 
-                            <!-- Footer Signatures (Text Based) -->
-                            <div class="absolute bottom-7 left-8 right-8 flex justify-between items-end z-20">
+                            <!-- Footer Signatures (Text Based) - Adjusted spacing -->
+                            <div class="absolute bottom-6 left-8 right-8 flex justify-between items-end z-20">
                                 <div class="flex flex-col items-center min-w-[100px]">
                                     <!-- Signature Simulation -->
-                                    <div id="dispSignStudent" class="sign-font text-2xl mb-[-5px] transform -rotate-2">Md Sabuj</div>
-                                    <div class="w-full h-[1px] bg-gray-800 mt-1"></div>
+                                    <div id="dispSignStudent" class="sign-font mb-1 transform -rotate-2">Md Sabuj</div>
+                                    <div class="w-full h-[1px] bg-gray-800 mt-0"></div>
                                     <p class="text-[11px] mt-0.5 font-bold">Signature of Student</p>
                                 </div>
                                 
                                 <div class="flex flex-col items-center min-w-[100px]">
                                     <!-- Signature Simulation -->
-                                    <div id="dispSignAuth" class="sign-font text-2xl mb-[-5px] transform -rotate-3">Chairman</div>
-                                    <div class="w-full h-[1px] bg-gray-800 mt-1"></div>
+                                    <div id="dispSignAuth" class="sign-font mb-1 transform -rotate-3">Chairman</div>
+                                    <div class="w-full h-[1px] bg-gray-800 mt-0"></div>
                                     <p class="text-[11px] mt-0.5 font-bold">Signature of Authority</p>
                                 </div>
                             </div>
