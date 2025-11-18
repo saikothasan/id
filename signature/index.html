@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Signature Maker - Create Digital Signatures Online</title>
+    <meta name="description" content="Free Online Signature Generator. Draw or type your signature and download as transparent PNG. Perfect for ID cards and documents.">
+    <meta name="keywords" content="Signature Creator, Digital Signature, E-Sign, Online Signature Pad, Transparent PNG Signature">
+    <meta name="author" content="DrKingBD">
+    <link rel="canonical" href="https://kingcc.web.app/signature">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kingcc.web.app/signature">
+    <meta property="og:title" content="Signature Maker - Free Online Tool">
+    <meta property="og:description" content="Create professional digital signatures instantly.">
+    <meta property="og:image" content="https://kingcc.web.app/assets/signature-preview.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Great+Vibes&family=Sacramento&family=Allura&display=swap');
+
+        /* Checkerboard background to show transparency */
+        .transparent-bg {
+            background-color: #ffffff;
+            background-image: linear-gradient(45deg, #f0f0f0 25%, transparent 25%), 
+                              linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), 
+                              linear-gradient(45deg, transparent 75%, #f0f0f0 75%), 
+                              linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+
+        /* Prevent scrolling while drawing on mobile */
+        canvas {
+            touch-action: none;
+            cursor: crosshair;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col font-sans">
+
+    <nav class="bg-blue-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <a href="/" class="font-bold text-xl flex items-center gap-2">
+                    <span class="bg-white text-blue-900 px-2 py-1 rounded">Uni</span>Sign
+                </a>
+
+                <div class="hidden md:flex space-x-6 items-center">
+                    <a href="/" class="hover:text-blue-300 transition">Home</a>
+                    <a href="/nid" class="hover:text-blue-300 transition">NID Maker</a>
+                    <a href="/drive" class="hover:text-blue-300 transition">Driving License</a>
+                    <a href="/cc-gen" class="hover:text-blue-300 transition">CC Generator</a>
+                    <a href="/cc-checker" class="hover:text-blue-300 transition">CC Checker</a>
+                </div>
+
+                <a href="https://t.me/drkingbd" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-bold py-2 px-4 rounded-full transition flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12.268 12.268 0 0 0-.294 0zM10.14 14.51l.202 2.683a1.2 1.2 0 0 0 .965-.5l1.322-1.266 2.728 2.013c.5.274 1.28.137 1.463-.455l2.655-12.5c.267-1.078-1.252-1.548-1.776-.777L3.765 12.482c-.886.354-.88 1.227.194 1.538l3.5 1.092 1.22 3.844a.6.6 0 0 0 1.15-.2l-1.08-3.412 6.8-4.85-5.409 4.016z"/></svg>
+                    Telegram
+                </a>
+            </div>
+            <div class="md:hidden flex space-x-4 overflow-x-auto pb-3 text-sm whitespace-nowrap">
+                <a href="/" class="hover:text-blue-300">Home</a>
+                <a href="/nid" class="hover:text-blue-300">NID Maker</a>
+                <a href="/drive" class="hover:text-blue-300">Driving License</a>
+                <a href="/cc-gen" class="hover:text-blue-300">CC Gen</a>
+                <a href="/cc-checker" class="hover:text-blue-300">CC Checker</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="bg-blue-100 border-b border-blue-200 text-center py-2">
+        <p class="text-blue-800 text-sm">
+            Need an ID Card? Visit the <a href="/" class="font-bold underline hover:text-blue-900">UniCard Maker</a>
+        </p>
+    </div>
+
+    <div class="flex-grow p-4 flex items-center justify-center">
+        <div class="bg-white w-full max-w-2xl rounded-xl shadow-2xl overflow-hidden">
+            
+            <div class="bg-gray-50 p-4 border-b flex justify-between items-center">
+                <h1 class="text-xl font-bold text-gray-800">Signature Generator</h1>
+                <div class="flex space-x-2">
+                    <button onclick="switchMode('draw')" id="btnModeDraw" class="px-3 py-1 text-xs font-bold rounded bg-blue-600 text-white">Draw</button>
+                    <button onclick="switchMode('type')" id="btnModeType" class="px-3 py-1 text-xs font-bold rounded bg-gray-200 text-gray-700 hover:bg-gray-300">Type</button>
+                </div>
+            </div>
+
+            <div class="p-6">
+                
+                <div class="relative w-full h-64 border-2 border-dashed border-gray-300 rounded-lg transparent-bg overflow-hidden mx-auto">
+                    <canvas id="sigCanvas" class="w-full h-full block"></canvas>
+                    <div id="placeholderText" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-400 pointer-events-none select-none">
+                        Sign here
+                    </div>
+                </div>
+
+                <div id="typeControls" class="hidden mt-4 space-y-3">
+                    <input type="text" id="textInput" placeholder="Type your name..." class="w-full border rounded p-3 text-lg focus:outline-none focus:ring-2 focus:ring-blue-500" oninput="renderTypedSignature()">
+                    <div class="flex gap-2 overflow-x-auto pb-2">
+                        <button onclick="setFont('Great Vibes')" class="px-3 py-2 border rounded hover:bg-blue-50 whitespace-nowrap" style="font-family: 'Great Vibes', cursive;">Style 1</button>
+                        <button onclick="setFont('Sacramento')" class="px-3 py-2 border rounded hover:bg-blue-50 whitespace-nowrap" style="font-family: 'Sacramento', cursive;">Style 2</button>
+                        <button onclick="setFont('Dancing Script')" class="px-3 py-2 border rounded hover:bg-blue-50 whitespace-nowrap" style="font-family: 'Dancing Script', cursive;">Style 3</button>
+                        <button onclick="setFont('Allura')" class="px-3 py-2 border rounded hover:bg-blue-50 whitespace-nowrap" style="font-family: 'Allura', cursive;">Style 4</button>
+                    </div>
+                </div>
+
+                <div class="mt-4 flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center space-x-4">
+                        <div class="flex space-x-2">
+                            <button onclick="setColor('#000000')" class="w-8 h-8 rounded-full bg-black border-2 border-white shadow-sm focus:ring-2 ring-offset-1 ring-gray-400" title="Black"></button>
+                            <button onclick="setColor('#1d4ed8')" class="w-8 h-8 rounded-full bg-blue-700 border-2 border-white shadow-sm focus:ring-2 ring-offset-1 ring-blue-400" title="Blue"></button>
+                        </div>
+                        
+                        <div class="flex items-center space-x-2" id="penSizeControl">
+                            <span class="text-xs text-gray-500">Size:</span>
+                            <input type="range" min="1" max="5" value="2" id="penSize" class="w-20 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" oninput="setLineWidth(this.value)">
+                        </div>
+                    </div>
+
+                    <button onclick="clearCanvas()" class="text-red-500 text-sm font-semibold hover:text-red-700">
+                        Clear / Reset
+                    </button>
+                </div>
+
+                <div class="mt-6">
+                    <button onclick="downloadSignature()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow-md flex justify-center items-center gap-2 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Download Transparent PNG
+                    </button>
+                    <p class="text-xs text-center text-gray-400 mt-2">Compatible with UniCard Maker upload</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-white border-t mt-auto py-6 text-center">
+        <p class="text-gray-600">© 2025 UniCard Tools.</p>
+        <p class="text-sm text-gray-400 mt-1">Join Telegram: <a href="https://t.me/drkingbd" class="text-blue-500 hover:underline">@drkingbd</a></p>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('sigCanvas');
+        const ctx = canvas.getContext('2d');
+        const placeholder = document.getElementById('placeholderText');
+        
+        // State variables
+        let isDrawing = false;
+        let currentColor = '#000000';
+        let currentLineWidth = 2;
+        let currentMode = 'draw'; // 'draw' or 'type'
+        let currentFont = 'Great Vibes';
+
+        // Initialize Canvas resolution
+        function resizeCanvas() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            // Reset context props after resize
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.strokeStyle = currentColor;
+            ctx.lineWidth = currentLineWidth;
+            if(currentMode === 'type') renderTypedSignature();
+        }
+        window.addEventListener('resize', resizeCanvas);
+        
+        // Call immediately to set initial size
+        setTimeout(resizeCanvas, 100);
+
+        // --- DRAWING MODE FUNCTIONS ---
+
+        function startDraw(e) {
+            if(currentMode !== 'draw') return;
+            isDrawing = true;
+            placeholder.style.display = 'none';
+            ctx.beginPath();
+            const { x, y } = getPos(e);
+            ctx.moveTo(x, y);
+        }
+
+        function draw(e) {
+            if (!isDrawing || currentMode !== 'draw') return;
+            e.preventDefault(); // Stop scrolling
+            const { x, y } = getPos(e);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+        }
+
+        function stopDraw() {
+            isDrawing = false;
+        }
+
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                x: clientX - rect.left,
+                y: clientY - rect.top
+            };
+        }
+
+        // Event Listeners for Drawing
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDraw);
+        canvas.addEventListener('mouseout', stopDraw);
+
+        // Touch support
+        canvas.addEventListener('touchstart', startDraw);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDraw);
+
+        // --- TYPING MODE FUNCTIONS ---
+
+        function renderTypedSignature() {
+            if (currentMode !== 'type') return;
+            
+            const text = document.getElementById('textInput').value;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (!text) {
+                placeholder.style.display = 'block';
+                return;
+            } else {
+                placeholder.style.display = 'none';
+            }
+
+            ctx.font = `100px "${currentFont}"`; // Large font size
+            ctx.fillStyle = currentColor;
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            
+            // Draw text in center
+            ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+        }
+
+        function setFont(fontName) {
+            currentFont = fontName;
+            renderTypedSignature();
+        }
+
+        // --- SHARED FUNCTIONS ---
+
+        function switchMode(mode) {
+            currentMode = mode;
+            clearCanvas();
+            
+            const btnDraw = document.getElementById('btnModeDraw');
+            const btnType = document.getElementById('btnModeType');
+            const typeControls = document.getElementById('typeControls');
+            const penSizeControl = document.getElementById('penSizeControl');
+
+            if (mode === 'draw') {
+                btnDraw.className = "px-3 py-1 text-xs font-bold rounded bg-blue-600 text-white";
+                btnType.className = "px-3 py-1 text-xs font-bold rounded bg-gray-200 text-gray-700 hover:bg-gray-300";
+                typeControls.classList.add('hidden');
+                penSizeControl.classList.remove('hidden'); // Show pen size
+            } else {
+                btnType.className = "px-3 py-1 text-xs font-bold rounded bg-blue-600 text-white";
+                btnDraw.className = "px-3 py-1 text-xs font-bold rounded bg-gray-200 text-gray-700 hover:bg-gray-300";
+                typeControls.classList.remove('hidden');
+                penSizeControl.classList.add('hidden'); // Hide pen size
+                
+                // Focus input
+                document.getElementById('textInput').focus();
+            }
+        }
+
+        function setColor(color) {
+            currentColor = color;
+            ctx.strokeStyle = color;
+            ctx.fillStyle = color; // For typed text
+            if(currentMode === 'type') renderTypedSignature();
+        }
+
+        function setLineWidth(width) {
+            currentLineWidth = width;
+            ctx.lineWidth = width;
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            placeholder.style.display = 'block';
+            if(currentMode === 'type') {
+                document.getElementById('textInput').value = '';
+            }
+        }
+
+        function downloadSignature() {
+            // Check if canvas is empty (simple check)
+            const blank = document.createElement('canvas');
+            blank.width = canvas.width;
+            blank.height = canvas.height;
+
+            if (canvas.toDataURL() === blank.toDataURL()) {
+                alert("Please draw or type a signature first!");
+                return;
+            }
+
+            const link = document.createElement('a');
+            link.download = 'my-signature.png';
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        }
+    </script>
+</body>
+</html>
