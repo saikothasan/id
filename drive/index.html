@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>UniCard Drive - UK Driving Licence Generator</title>
+    <meta name="description" content="Generate realistic UK Driving Licence replicas for projects. Auto-generates driver numbers.">
+    <meta name="author" content="DrKingBD">
+    <link rel="canonical" href="https://kingcc.web.app/drive">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Libre+Barcode+39+Text&display=swap');
+
+        body { font-family: 'Roboto', sans-serif; }
+
+        /* --- Card Styling --- */
+        .uk-card {
+            width: 490px;
+            height: 310px;
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #fcf5f7;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+        /* Complex Background Pattern (Guilloche) */
+        .uk-pattern {
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(236, 72, 153, 0.05) 10px, rgba(236, 72, 153, 0.05) 11px);
+            z-index: 0;
+        }
+        
+        /* Steering Wheel Watermark Simulation */
+        .steering-wheel {
+            position: absolute;
+            right: -30px;
+            bottom: -30px;
+            width: 250px;
+            height: 250px;
+            border: 15px solid rgba(255, 200, 220, 0.3);
+            border-radius: 50%;
+            z-index: 0;
+        }
+        .steering-wheel::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 0; right: 0; height: 15px;
+            background: rgba(255, 200, 220, 0.3);
+            transform: translateY(-50%);
+        }
+        .steering-wheel::after {
+            content: '';
+            position: absolute;
+            left: 50%; top: 0; bottom: 0; width: 15px;
+            background: rgba(255, 200, 220, 0.3);
+            transform: translateX(-50%);
+        }
+
+        /* Header Blue Box */
+        .uk-header-box {
+            background: linear-gradient(to bottom, #003399, #002266);
+            color: #fbbf24; /* Yellow */
+            font-weight: 900;
+            font-family: sans-serif;
+        }
+
+        /* Numbered Labels */
+        .label-num {
+            color: #0055aa; /* Specific UK Licence Blue for numbers */
+            font-weight: 700;
+            font-size: 10px;
+            margin-right: 4px;
+        }
+        
+        .field-val {
+            font-weight: 700;
+            color: #1f2937;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        /* Photo Styling */
+        .photo-box {
+            filter: grayscale(100%) contrast(110%); /* UK Licence photos are B&W */
+            mix-blend-mode: multiply;
+        }
+        
+        .holo-overlay {
+            background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.4) 45%, transparent 50%);
+        }
+
+        /* Signature */
+        .sig-img {
+            mix-blend-mode: multiply;
+        }
+
+        /* Union Jack */
+        .union-jack {
+            background-image: url('https://upload.wikimedia.org/wikipedia/en/thumb/a/ae/Flag_of_the_United_Kingdom.svg/1200px-Flag_of_the_United_Kingdom.svg.png');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+    <nav class="bg-blue-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <a href="/" class="font-bold text-xl flex items-center gap-2">
+                    <span class="bg-white text-blue-900 px-2 py-1 rounded">Uni</span>Drive
+                </a>
+                <div class="hidden md:flex space-x-6 items-center">
+                    <a href="/" class="hover:text-blue-300 transition">Home</a>
+                    <a href="/nid" class="hover:text-blue-300 transition">NID Maker</a>
+                    <a href="/drive" class="text-blue-300 font-bold border-b-2 border-blue-300">Driving License</a>
+                    <a href="/cc-gen" class="hover:text-blue-300 transition">CC Gen</a>
+                    <a href="/signature" class="hover:text-blue-300 transition">Signature</a>
+                </div>
+                <a href="https://t.me/drkingbd" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-bold py-2 px-4 rounded-full transition flex items-center gap-2">
+                    Telegram
+                </a>
+            </div>
+             <div class="md:hidden flex space-x-4 overflow-x-auto pb-3 text-sm whitespace-nowrap px-4">
+                <a href="/" class="hover:text-blue-300">Home</a>
+                <a href="/nid" class="hover:text-blue-300">NID Maker</a>
+                <a href="/drive" class="font-bold text-blue-300">Driving License</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex-grow p-4 md:p-6">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 xl:grid-cols-12 gap-8">
+            
+            <div class="xl:col-span-5 bg-white p-6 rounded-xl shadow-lg h-fit">
+                <h2 class="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">Driver Details</h2>
+                
+                <div class="space-y-3">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-xs font-semibold text-gray-500 uppercase">1. Surname</label>
+                            <input type="text" id="inSurname" value="HOWARD" class="w-full border rounded p-2 text-sm uppercase" oninput="updateCard()">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-500 uppercase">2. First Names</label>
+                            <input type="text" id="inFirstname" value="JERRY" class="w-full border rounded p-2 text-sm uppercase" oninput="updateCard()">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-xs font-semibold text-gray-500 uppercase">3. Date of Birth</label>
+                            <input type="date" id="inDob" value="1984-02-01" class="w-full border rounded p-2 text-sm" oninput="updateCard()">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-500 uppercase">Gender (For Code)</label>
+                            <select id="inGender" class="w-full border rounded p-2 text-sm" onchange="updateCard()">
+                                <option value="M">Male</option>
+                                <option value="F">Female</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-xs font-semibold text-gray-500 uppercase">Country of Birth</label>
+                            <input type="text" id="inCountry" value="UNITED KINGDOM" class="w-full border rounded p-2 text-sm uppercase" oninput="updateCard()">
+                        </div>
+                         <div>
+                            <label class="text-xs font-semibold text-gray-500 uppercase">4a. Issue Date</label>
+                            <input type="date" id="inIssue" value="2016-06-22" class="w-full border rounded p-2 text-sm" oninput="updateCard()">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-semibold text-gray-500 uppercase">8. Address</label>
+                        <textarea id="inAddress" rows="2" class="w-full border rounded p-2 text-sm uppercase" oninput="updateCard()">3 LODGE GARDENS, HESSLE, EAST RIDING OF YORKSHIRE, HU13 0GA</textarea>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                         <div>
+                            <label class="text-xs font-semibold text-gray-500 uppercase">9. Categories</label>
+                            <input type="text" id="inCats" value="AM/A/B1/B/f/k/p/q" class="w-full border rounded p-2 text-sm" oninput="updateCard()">
+                        </div>
+                        <div>
+                             <label class="text-xs font-semibold text-gray-500 uppercase">5. Driver No (Auto)</label>
+                             <input type="text" id="inDriverNo" placeholder="Auto-generated" readonly class="w-full border rounded p-2 text-sm bg-gray-100 text-gray-500">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 pt-2 border-t mt-2">
+                        <div>
+                            <label class="text-xs font-semibold text-gray-500 uppercase">Photo</label>
+                            <input type="file" id="inputPhoto" accept="image/*" class="w-full text-xs border rounded p-1" onchange="loadImage(this, 'imgPhoto')">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-500 uppercase">Signature</label>
+                            <input type="file" id="inputSign" accept="image/*" class="w-full text-xs border rounded p-1" onchange="loadImage(this, 'imgSign')">
+                        </div>
+                    </div>
+
+                    <button onclick="downloadCard()" class="w-full bg-purple-700 hover:bg-purple-800 text-white font-bold py-3 rounded-lg mt-4 transition shadow-md flex justify-center items-center gap-2">
+                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Download Licence
+                    </button>
+                </div>
+            </div>
+
+            <div class="xl:col-span-7 flex flex-col items-center justify-start pt-6">
+                <div class="flex justify-between w-full max-w-[490px] mb-2">
+                    <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider">Live Preview</h3>
+                    <span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">Post-Brexit Style</span>
+                </div>
+
+                <div id="driveCard" class="uk-card">
+                    <div class="uk-pattern"></div>
+                    <div class="steering-wheel"></div>
+
+                    <div class="absolute top-4 left-4 w-14 h-10 uk-header-box flex items-center justify-center text-2xl rounded-sm z-20 shadow-sm">
+                        UK
+                    </div>
+
+                    <div class="absolute top-4 left-20 right-4 z-20">
+                        <h1 class="text-blue-700 font-bold text-lg uppercase tracking-wide">Driving Licence</h1>
+                    </div>
+
+                    <div class="absolute top-12 left-20 right-4 bottom-4 z-20">
+                        
+                        <div class="flex items-baseline mb-0.5">
+                            <span class="label-num">1.</span>
+                            <span id="outSurname" class="field-val text-[13px]">HOWARD</span>
+                        </div>
+
+                        <div class="flex items-baseline mb-1">
+                            <span class="label-num">2.</span>
+                            <span id="outFirstname" class="field-val">JERRY</span>
+                        </div>
+
+                        <div class="flex items-baseline mb-1">
+                            <span class="label-num">3.</span>
+                            <span id="outDob" class="field-val mr-2">01.02.1984</span>
+                            <span id="outCountry" class="field-val text-[10px]">UNITED KINGDOM</span>
+                        </div>
+
+                        <div class="flex gap-4 mb-1">
+                            <div>
+                                <span class="label-num">4a.</span>
+                                <span id="outIssue" class="field-val">22.06.2016</span>
+                            </div>
+                            <div>
+                                <span class="label-num">4c.</span>
+                                <span class="field-val text-black">DVLA</span>
+                            </div>
+                        </div>
+                        <div class="mb-1">
+                            <span class="label-num">4b.</span>
+                            <span id="outExpiry" class="field-val">21.06.2026</span>
+                        </div>
+
+                        <div class="mb-2 pl-8">
+                            <span class="label-num">5.</span>
+                            <span id="outDriverNo" class="field-val font-mono text-[12px] tracking-wider">HOWAR802014J99FT 12</span>
+                        </div>
+
+                        <div class="relative h-10 mb-1">
+                            <span class="label-num absolute top-0 left-0">7.</span>
+                            <div class="w-32 h-12 absolute top-[-5px] left-20">
+                                <img id="imgSign" src="https://via.placeholder.com/150x50?text=Signature" class="w-full h-full object-contain sig-img opacity-80 grayscale">
+                            </div>
+                        </div>
+
+                        <div class="flex items-start mb-2">
+                            <span class="label-num mt-0.5">8.</span>
+                            <span id="outAddress" class="field-val text-[9px] leading-3 w-64">
+                                3 LODGE GARDENS, HESSLE,<br>EAST RIDING OF YORKSHIRE, HU13 0GA
+                            </span>
+                        </div>
+
+                        <div class="flex items-baseline">
+                            <span class="label-num">9.</span>
+                            <span id="outCats" class="field-val text-[10px]">AM/A/B1/B/f/k/p/q</span>
+                        </div>
+                    </div>
+
+                    <div class="absolute top-24 left-4 w-14 h-20 z-20">
+                        <div class="w-full h-full bg-gray-300 overflow-hidden rounded-[2px] relative border border-gray-300">
+                            <img id="imgPhoto" src="https://via.placeholder.com/150" class="w-full h-full object-cover photo-box">
+                            <div class="absolute inset-0 holo-overlay"></div>
+                        </div>
+                        <div class="absolute bottom-1 left-1 right-1 z-30">
+                             <span id="outExpiryPhoto" class="text-[6px] font-bold text-black bg-white/60 px-0.5 rounded-sm">21.06.2026</span>
+                        </div>
+                    </div>
+
+                    <div class="absolute top-24 right-4 w-14 h-8 z-20 union-jack shadow-sm border border-gray-200"></div>
+
+                    <div class="absolute top-20 right-12 w-16 h-16 rounded-full border-2 border-white/20 z-10 opacity-40"></div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-white border-t mt-8 py-6 text-center">
+        <p class="text-gray-600">© 2025 UniCard Tools.</p>
+        <p class="text-xs text-gray-400 mt-1">Generated for educational/preview use only.</p>
+    </footer>
+
+    <script>
+        function updateCard() {
+            // 1. Get Basic Values
+            const surname = document.getElementById('inSurname').value.toUpperCase();
+            const firstname = document.getElementById('inFirstname').value.toUpperCase();
+            const dobRaw = document.getElementById('inDob').value;
+            const issueRaw = document.getElementById('inIssue').value;
+            const country = document.getElementById('inCountry').value.toUpperCase();
+            const address = document.getElementById('inAddress').value.toUpperCase().replace(/\n/g, '<br>');
+            const cats = document.getElementById('inCats').value;
+
+            // 2. Format Dates (YYYY-MM-DD -> DD.MM.YYYY)
+            const formatDate = (dateStr) => {
+                if(!dateStr) return '';
+                const d = new Date(dateStr);
+                return `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`;
+            };
+
+            const dobFormatted = formatDate(dobRaw);
+            const issueFormatted = formatDate(issueRaw);
+            
+            // Calculate Expiry (Issue + 10 Years)
+            let expiryFormatted = '';
+            if(issueRaw) {
+                const d = new Date(issueRaw);
+                d.setFullYear(d.getFullYear() + 10);
+                d.setDate(d.getDate() - 1); // Usually minus one day
+                expiryFormatted = `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`;
+            }
+
+            // 3. Map Text to Card
+            document.getElementById('outSurname').innerText = surname;
+            document.getElementById('outFirstname').innerText = firstname;
+            document.getElementById('outDob').innerText = dobFormatted;
+            document.getElementById('outCountry').innerText = country;
+            document.getElementById('outIssue').innerText = issueFormatted;
+            document.getElementById('outExpiry').innerText = expiryFormatted;
+            document.getElementById('outExpiryPhoto').innerText = expiryFormatted;
+            document.getElementById('outAddress').innerHTML = address;
+            document.getElementById('outCats').innerText = cats;
+
+            // 4. Generate Driver Number
+            const driverNo = generateDriverNumber(surname, firstname, dobRaw, document.getElementById('inGender').value);
+            document.getElementById('outDriverNo').innerText = driverNo;
+            document.getElementById('inDriverNo').value = driverNo;
+        }
+
+        // UK Driver Number Logic (Simplified for visual accuracy)
+        // FORMAT: SSSSS D MYY DD II #AA
+        // S=Surname(5), D=Decade(1), M=Month(1, +5 if female), Y=Year(1), DD=Day(2), I=Initials(2), #=Computer Check, AA=License Issue No
+        function generateDriverNumber(surname, firstname, dobStr, gender) {
+            if(!surname || !dobStr) return "SURNA801015JM99 01";
+
+            // 1. Surname (First 5 chars, padded with 9)
+            let sCode = surname.replace(/[^A-Z]/g, '').padEnd(5, '9').substring(0, 5);
+
+            const d = new Date(dobStr);
+            const yearFull = String(d.getFullYear());
+            const month = d.getMonth() + 1;
+            const day = String(d.getDate()).padStart(2, '0');
+
+            // 2. Decade (The 3rd digit of year) e.g., 1984 -> 8, 2002 -> 0
+            let decade = yearFull.charAt(2);
+
+            // 3. Month/Gender (Month 01-12. If Female, add 50 -> 51-62) - Actually UK uses a digit swap
+            // Real logic: Month (2 chars). First char: 0,1,5,6. 
+            // Let's use the visual logic:
+            // Month is the 2nd and 3rd chars of the block. 
+            // If female, add 5 to the first digit of month. e.g. Jan (01) -> Male 01, Female 51. Oct (10) -> Male 10, Female 60.
+            let mVal = month;
+            if(gender === 'F') mVal += 50;
+            let monthCode = String(mVal).padStart(2, '0');
+
+            // 4. Year (Last digit of year)
+            let yCode = yearFull.charAt(3);
+
+            // 5. Day (2 digits)
+            let dayCode = day;
+
+            // 6. Initials (First char of Firstname + Middle(9) or random)
+            let iCode = (firstname.charAt(0) + '9').substring(0, 2);
+
+            // 7. Check Digits (Arbitrary for this tool)
+            let check = "9AB"; // Common ending pattern look
+
+            // Construct: SSSSS (Decade)(Month1)(Month2)(Year)(Day1)(Day2) (Initials) (Check)
+            // UK Format is: SSSSS (Decade)(Month1) (Month2)(Year) (Day1)(Day2) II #
+            // Wait, standard view is: HOWAR 8 02 01 4 J99FT
+            // SSSSS (Decade)(Month1Month2)(Day1Day2)(Year) ... Wait, logic is slightly mixed in display.
+            // Let's stick to the visual standard: SSSSS DMMDDY II #AA
+            
+            // Actually, let's look at the image: HOWAR 80 20 14 J99FT (DOB 01.02.1984)
+            // 8 = Decade (1980s)
+            // 02 = Month (Feb)
+            // 01 = Day
+            // 4 = Year digit (1984)
+            // So: SSSSS D MM DD Y II Check
+            
+            let numberBlock = `${decade}${monthCode}${dayCode}${yCode}${iCode}9AA`;
+            
+            return `${sCode}${numberBlock} 12`; // 12 is issue number
+        }
+
+        function loadImage(input, targetId) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById(targetId).src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function downloadCard() {
+            const element = document.getElementById("driveCard");
+            html2canvas(element, {
+                scale: 3,
+                useCORS: true,
+                backgroundColor: "#fcf5f7"
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'UK_Driving_Licence.png';
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            });
+        }
+
+        // Init
+        updateCard();
+    </script>
+</body>
+</html>
