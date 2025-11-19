@@ -3,78 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>UniCard Checker - Mass CC Validator</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+    <title>UniCard Checker - Cloudflare Powered</title>
     <script src="https://cdn.tailwindcss.com"></script>
-
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
         body { font-family: 'Roboto', sans-serif; }
-
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
 
         .status-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 15px;
-            font-weight: 500;
-            color: white;
-            border-radius: 6px 6px 0 0;
-            font-size: 14px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 15px; font-weight: 500; color: white;
+            border-radius: 6px 6px 0 0; font-size: 14px;
         }
-
         .status-list {
-            background: white;
-            min-height: 50px;
-            max-height: 250px;
-            overflow-y: auto;
-            padding: 10px;
-            border: 1px solid #e5e7eb;
-            border-top: none;
-            border-radius: 0 0 6px 6px;
-            font-size: 11px;
-            font-family: monospace;
-            color: #333;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            background: white; min-height: 50px; max-height: 250px;
+            overflow-y: auto; padding: 10px; border: 1px solid #e5e7eb;
+            border-top: none; border-radius: 0 0 6px 6px; font-size: 11px;
+            font-family: monospace; color: #333;
         }
-
         .badge {
-            background: rgba(255,255,255,0.2);
-            border-radius: 12px;
-            padding: 2px 8px;
-            font-size: 11px;
-            font-weight: bold;
-            min-width: 24px;
-            text-align: center;
+            background: rgba(255,255,255,0.2); border-radius: 12px;
+            padding: 2px 8px; font-size: 11px; font-weight: bold; min-width: 24px; text-align: center;
         }
-
         .bg-live { background-color: #10b981; }
         .bg-die { background-color: #ef4444; }
         .bg-unknown { background-color: #f59e0b; }
-
-        /* Result Item Spacing */
-        .status-list div { 
-            margin-bottom: 4px; 
-            border-bottom: 1px dashed #eee; 
-            padding-bottom: 4px; 
-            word-break: break-all;
-        }
-        
-        /* Loading Spinner */
+        .status-list div { margin-bottom: 4px; border-bottom: 1px dashed #eee; padding-bottom: 4px; word-break: break-all; }
         .loader {
-            border: 2px solid #f3f3f3;
-            border-top: 2px solid #3498db;
-            border-radius: 50%;
-            width: 12px;
-            height: 12px;
-            animation: spin 1s linear infinite;
-            display: inline-block;
+            border: 2px solid #f3f3f3; border-top: 2px solid #3498db; border-radius: 50%;
+            width: 12px; height: 12px; animation: spin 1s linear infinite; display: inline-block;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
@@ -87,9 +46,7 @@
                 <a href="/" class="font-bold text-lg flex items-center gap-2">
                     <span class="bg-white text-blue-900 px-1.5 py-0.5 rounded text-sm font-black">Uni</span>Checker
                 </a>
-                <a href="https://t.me/drkingbd" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-1.5 px-3 rounded-full transition">
-                    Telegram
-                </a>
+                <a href="https://t.me/drkingbd" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-1.5 px-3 rounded-full transition">Telegram</a>
             </div>
         </div>
     </nav>
@@ -114,14 +71,12 @@
 
             <div class="bg-white rounded-lg shadow-md mb-6 border border-gray-200 overflow-hidden">
                 <div class="p-0">
-                    <textarea id="ccList" class="w-full h-48 p-4 text-xs font-mono border-none focus:ring-0 resize-none text-gray-700 placeholder-gray-400" placeholder="53012724539xxxxx|05|2022|653&#10;5154620020226807|06|2027|855"></textarea>
+                    <textarea id="ccList" class="w-full h-48 p-4 text-xs font-mono border-none focus:ring-0 resize-none text-gray-700 placeholder-gray-400" placeholder="53012724539xxxxx|05|2022|653"></textarea>
                 </div>
                 
                 <div class="bg-gray-50 px-4 py-3 flex justify-between items-center border-t border-gray-100">
                     <div class="text-xs text-gray-500 flex items-center gap-2">
-                        <span id="statusIndicator" class="hidden flex items-center gap-1">
-                            <div class="loader"></div> Checking...
-                        </span>
+                        <span id="statusIndicator" class="hidden flex items-center gap-1"><div class="loader"></div> Checking...</span>
                         <span id="linesCount">0 Lines</span>
                     </div>
                     <div class="flex gap-2">
@@ -132,52 +87,44 @@
             </div>
 
             <div class="space-y-4">
-                
                 <div>
-                    <div class="status-header bg-live">
-                        <span>Live Cards</span>
-                        <span id="countLive" class="badge">0</span>
-                    </div>
+                    <div class="status-header bg-live"><span>Live Cards</span><span id="countLive" class="badge">0</span></div>
                     <div id="listLive" class="status-list"></div>
                 </div>
-
                 <div>
-                    <div class="status-header bg-die">
-                        <span>Declined / Die</span>
-                        <span id="countDie" class="badge">0</span>
-                    </div>
+                    <div class="status-header bg-die"><span>Declined / Die</span><span id="countDie" class="badge">0</span></div>
                     <div id="listDie" class="status-list"></div>
                 </div>
-
                 <div>
-                    <div class="status-header bg-unknown">
-                        <span>Unknown / Errors</span>
-                        <span id="countUnknown" class="badge">0</span>
-                    </div>
+                    <div class="status-header bg-unknown"><span>Unknown / Errors</span><span id="countUnknown" class="badge">0</span></div>
                     <div id="listUnknown" class="status-list"></div>
                 </div>
-
             </div>
-
         </div>
     </div>
 
     <script>
+        // ==========================================
+        //  PASTE YOUR CLOUDFLARE WORKER URL HERE
+        // ==========================================
+        const WORKER_URL = 'https://proxy.wka.workers.dev'; 
+        // e.g., 'https://unicard-proxy.myname.workers.dev'
+
         let isRunning = false;
         let total = 0;
         let checkedCount = 0;
-        const proxyUrl = 'https://corsproxy.io/?'; // Using a proxy to bypass CORS/Network Error
-        const targetUrl = 'https://mock.payate.com/api.php';
-
         const counts = { live: 0, die: 0, unknown: 0 };
 
-        // Update line count on typing
         document.getElementById('ccList').addEventListener('input', function() {
             const lines = this.value.split('\n').filter(l => l.trim().length > 5).length;
             document.getElementById('linesCount').innerText = lines + " Lines";
         });
 
         async function startCheck() {
+            if (WORKER_URL === 'https://proxy.wka.workers.dev') {
+                alert("Please setup the Cloudflare Worker first and paste the URL in the code!");
+                return;
+            }
             if (isRunning) return;
             
             const input = document.getElementById('ccList').value;
@@ -192,25 +139,18 @@
             document.getElementById('btnStart').classList.add('opacity-50', 'cursor-not-allowed');
             document.getElementById('statusIndicator').classList.remove('hidden');
 
-            total = lines.length;
-
-            // Process one by one
-            for (let i = 0; i < total; i++) {
+            for (let i = 0; i < lines.length; i++) {
                 if (!isRunning) break;
-
                 const ccData = lines[i].trim();
                 await checkCard(ccData);
-                
-                // Update Checked Counter
                 checkedCount++;
                 document.getElementById('statChecked').innerText = checkedCount;
-
-                // Remove processed line from textarea
+                
+                // Remove line
                 const remaining = lines.slice(i + 1).join('\n');
                 document.getElementById('ccList').value = remaining;
                 document.getElementById('linesCount').innerText = (lines.length - 1 - i) + " Lines";
             }
-
             stopCheck();
         }
 
@@ -223,10 +163,8 @@
         function updateCounts() {
             document.getElementById('countLive').innerText = counts.live;
             document.getElementById('statLive').innerText = counts.live;
-            
             document.getElementById('countDie').innerText = counts.die;
             document.getElementById('statDie').innerText = counts.die;
-            
             document.getElementById('countUnknown').innerText = counts.unknown;
         }
 
@@ -235,20 +173,13 @@
                 const formData = new URLSearchParams();
                 formData.append('data', ccData);
 
-                // Use CORS Proxy to fix "Network Error"
-                // Note: We removed custom headers like 'Referer' because browsers strictly block them in client-side JS
-                const response = await fetch(proxyUrl + encodeURIComponent(targetUrl), {
+                const response = await fetch(WORKER_URL, {
                     method: "POST",
-                    headers: {
-                        "content-type": "application/x-www-form-urlencoded; charset=UTF-8"
-                    },
                     body: formData
                 });
 
                 const result = await response.json();
                 
-                // Map API Error codes
-                // 1 = Live, 2 = Die, 3 = Unknown
                 if (result.error === 1) {
                     appendResult('listLive', result.msg);
                     counts.live++;
@@ -259,21 +190,17 @@
                     appendResult('listUnknown', result.msg || "Unknown Response");
                     counts.unknown++;
                 }
-
             } catch (error) {
-                console.error("Check failed:", error);
-                // If proxy fails, it might be a genuine timeout or API down
-                appendResult('listUnknown', `<span style="color:orange">[TIMEOUT/ERROR]</span> ${ccData} - Check API status`);
+                console.error(error);
+                appendResult('listUnknown', `<span style="color:orange">[WORKER ERROR]</span> ${ccData}`);
                 counts.unknown++;
             }
-
             updateCounts();
         }
 
         function appendResult(elementId, htmlContent) {
             const container = document.getElementById(elementId);
             const div = document.createElement('div');
-            // Clean up response to look nicer
             div.innerHTML = htmlContent.replace('<div>', '').replace('</div>', ''); 
             container.prepend(div);
         }
